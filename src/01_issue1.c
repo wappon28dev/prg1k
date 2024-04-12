@@ -3,7 +3,7 @@
 #define WIDTH 8
 #define HEIGHT 5
 
-typedef char Letter[WIDTH * HEIGHT + 1];
+typedef char Letter[WIDTH * HEIGHT + 1 /* ヌル終端 */];
 
 Letter A =
     "    ___ "
@@ -26,21 +26,18 @@ Letter T =
     " / /    "
     "/_/     ";
 
-void display(char *letters[], int letterLength)
+void displayAA(char *letters[], int letterLength)
 {
     for (int h = 0; h < HEIGHT; h++)
     {
-        char rows[               //
-            WIDTH * letterLength //
-            + 1                  // for null terminator
-        ];
+        char rows[WIDTH * letterLength + 1 /* ヌル終端 */];
 
-        for (int i = 0; i < letterLength; i++)
+        for (int letterIdx = 0; letterIdx < letterLength; letterIdx++)
         {
-            char *letter = letters[i];
+            char *letter = letters[letterIdx];
             for (int w = 0; w < WIDTH; w++)
             {
-                rows[i * WIDTH + w] = letter[h * WIDTH + w];
+                rows[letterIdx * WIDTH + w] = letter[h * WIDTH + w];
             }
         }
         rows[WIDTH * letterLength] = '\0';
@@ -52,15 +49,15 @@ int main()
 {
     char *it[] = {I, T};
     int itLength = sizeof(it) / sizeof(it[0]);
-    display(it, itLength);
+    displayAA(it, itLength); // -> IT
 
     char *ait[] = {A, I, T};
     int aitLength = sizeof(ait) / sizeof(ait[0]);
-    display(ait, aitLength);
+    displayAA(ait, aitLength); // -> AIT
 
     char *tooHot[] = {A, T, T, I, T, T, I};
     int tooHotLength = sizeof(tooHot) / sizeof(tooHot[0]);
-    display(tooHot, tooHotLength);
+    displayAA(tooHot, tooHotLength); // -> ATTIITI
 
     return 0;
 }
