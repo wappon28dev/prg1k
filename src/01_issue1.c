@@ -48,16 +48,11 @@ void displayAA(char *letters[], int letterLength)
 int main()
 {
     char *it[] = {I, T};
-    int itLength = sizeof(it) / sizeof(it[0]);
-    displayAA(it, itLength); // -> IT
+    displayAA(it, sizeof(it) / sizeof(it[0])); // -> IT
 
     char *ait[] = {A, I, T};
-    int aitLength = sizeof(ait) / sizeof(ait[0]);
-    displayAA(ait, aitLength); // -> AIT
+    displayAA(ait, sizeof(ait) / sizeof(ait[0])); // -> AIT
 
     char *tooHot[] = {A, T, T, I, T, T, I};
-    int tooHotLength = sizeof(tooHot) / sizeof(tooHot[0]);
-    displayAA(tooHot, tooHotLength); // -> ATTIITI
-
-    return 0;
+    displayAA(tooHot, sizeof(tooHot) / sizeof(tooHot[0])); // -> ATTIITI
 }
