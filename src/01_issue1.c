@@ -55,4 +55,6 @@ int main()
 
     char *tooHot[] = {A, T, T, I, T, T, I};
     displayAA(tooHot, sizeof(tooHot) / sizeof(tooHot[0])); // -> ATTIITI
+
+    return 0;
 }
