@@ -1,4 +1,7 @@
 {
   "debug.console.collapseIdenticalLines": false,
-  "workbench.panel.defaultLocation": "left"
+  "workbench.panel.defaultLocation": "left",
+  "files.associations": {
+    "stdio.h": "c"
+  }
 }

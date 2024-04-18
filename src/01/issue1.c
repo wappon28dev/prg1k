@@ -45,7 +45,7 @@ void displayAA(char *letters[], int letterLength)
     }
 }
 
-int main()
+int main(int argc, char *argv[])
 {
     char *it[] = {I, T};
     displayAA(it, sizeof(it) / sizeof(it[0])); // -> IT
