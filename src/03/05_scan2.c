@@ -6,7 +6,7 @@ int main(int argc, char *argv[])
 
   printf("a b? ");
   scanf("%lf %lf", &a, &b);
-  printf("\na = %f, b = %f\n", a, b);
+  printf("a = %f, b = %f\n", a, b);
 
   return 0;
 }

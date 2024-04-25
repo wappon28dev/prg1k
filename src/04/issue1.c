@@ -11,8 +11,8 @@ int main(int argc, char *argv[])
 
   printf("standardWeight = %lf\n", (height - 100) * 0.9);
 
-  float heightM = (float)height / 100;
-  float bmi = (float)weight / (heightM * heightM);
+  double heightM = (double)height / 100;
+  double bmi = (double)weight / (heightM * heightM);
   printf("BMI = %lf\n", bmi);
 
   return 0;
