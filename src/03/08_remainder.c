@@ -7,7 +7,7 @@ int main(int argc, char *argv[])
   printf("a b? ");
   scanf("%d %d", &a, &b);
 
-  printf("%d", a);
+  printf("%d\n", a % b);
 
   return 0;
 }
