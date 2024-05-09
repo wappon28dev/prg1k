@@ -2,6 +2,9 @@
   "debug.console.collapseIdenticalLines": false,
   "workbench.panel.defaultLocation": "left",
   "files.associations": {
-    "stdio.h": "c"
-  }
+    "stdio.h": "c",
+    "__config": "c",
+    "stdbool.h": "c"
+  },
+  "cSpell.words": ["Treatmentable"]
 }
