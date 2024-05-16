@@ -2,7 +2,12 @@
 
 int main(int argc, char *argv[])
 {
-  for (int count = 0; count < 1000; count++)
+  int n;
+
+  printf("n? ");
+  scanf("%d", &n);
+
+  for (int i = 0; i < n; i++)
   {
     printf("Hello, World!\n");
   }

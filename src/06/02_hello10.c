@@ -2,7 +2,7 @@
 
 int main(int argc, char *argv[])
 {
-  for (int count = 0; count < 1000; count++)
+  for (int i = 0; i < 10; i++)
   {
     printf("Hello, World!\n");
   }

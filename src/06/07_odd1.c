@@ -2,9 +2,9 @@
 
 int main(int argc, char *argv[])
 {
-  for (int count = 0; count < 1000; count++)
+  for (int i = 1; i <= 10; i += 2)
   {
-    printf("Hello, World!\n");
+    printf("%d\n", i);
   }
 
   return 0;
