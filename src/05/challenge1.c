@@ -13,7 +13,7 @@ int main(int argc, char *argv[])
   /// 0: 09:00 ~ 12:00, 1: 13:00 ~ 16:00
   int timeSlot;
 
-  bool isOpened;
+  bool isOpened = false;
 
   printf("曜日? ");
   scanf("%d", &dayOfWeek);
@@ -27,10 +27,6 @@ int main(int argc, char *argv[])
     {
       isOpened = true;
     }
-    else
-    {
-      isOpened = false;
-    }
   }
 
   if (timeSlot == 1)
@@ -39,14 +35,9 @@ int main(int argc, char *argv[])
     {
       isOpened = true;
     }
-    else
-    {
-      isOpened = false;
-    }
   }
 
-  printf("診察を行ってい");
-  printf(isOpened ? "ます" : "ません");
+  printf(isOpened ? "診察を行っています" : "診察は行っていません");
   printf("\n");
 
   return 0;
