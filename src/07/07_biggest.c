@@ -1,13 +1,14 @@
 #include <stdio.h>
+#include <limits.h>
 
 int main(int argc, char *argv[])
 {
 
-  int max = 0;
-  for (int i = 0; i < 5; i++)
+  int max = INT_MIN;
+  for (int i = 1; i <= 5; i++)
   {
     int n;
-    printf("n? ");
+    printf("%d? ", i);
     scanf("%d", &n);
 
     if (n > max)
