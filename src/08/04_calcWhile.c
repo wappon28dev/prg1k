@@ -11,15 +11,15 @@ int main(int argc, char *argv[])
     printf("x? ");
     scanf("%d", &x);
 
+    sum += x;
+    printf("sum: %d\n", sum);
+
     if (x == 0)
     {
       break;
     }
-
-    sum += x;
   }
 
-  printf("sum: %d\n", sum);
   printf("end\n");
 
   return 0;
