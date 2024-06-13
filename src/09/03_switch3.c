@@ -19,17 +19,16 @@ int main(int argc, char *argv[])
 
   switch (selected)
   {
-
   case 1:
     printf("|%lf| = %lf\n", x, fabs(x));
     break;
 
   case 2:
-    printf("%f ^ 2 = %f\n", x, pow(x, 2));
+    printf("%lf ^ 2 = %f\n", x, pow(x, 2));
     break;
 
   case 3:
-    printf("%f ^ 3 = %f\n", x, pow(x, 3));
+    printf("%lf ^ 3 = %f\n", x, pow(x, 3));
     break;
   }
   return 0;
