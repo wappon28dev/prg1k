@@ -127,7 +127,7 @@ const getPrefix = async (): Promise<string> => {
 };
 
 const getSuffix = async (kind: Kind, name: string): Promise<string> => {
-  const init = kind === "issues" ? `_${name.toUpperCase()}` : "";
+  const init = kind === "issues" ? `_${name}` : "";
   const suffix = await text({
     message: "ファイル名の最後につける文字を入力してください",
     placeholder:
@@ -233,7 +233,7 @@ const createZip = async (
 };
 
 const main = async (): Promise<void> => {
-  intro("Cook Zip — プログラミング実習の提出物を ZIP にするよ");
+  intro("Cook Zip v2 — プログラミング実習の提出物を ZIP にするよ");
 
   const name = await getStudentId();
   const kind = await getSubmissionType();
