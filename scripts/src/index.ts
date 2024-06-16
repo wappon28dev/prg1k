@@ -19,6 +19,9 @@ import packageJson from "packageJson";
 import pc from "picocolors";
 import { match } from "ts-pattern";
 
+const REPOSITORY_URL = "https://github.com/wappon28dev/prg1k/releases/latest";
+const FORMULA_URL = "wappon28dev/tap/cook-zip";
+
 type Kind = "practice" | "issues";
 interface FileOption {
   value: string;
@@ -32,6 +35,43 @@ const waitMs = async (ms: number): Promise<void> => {
   });
 };
 
+async function checkUpdate(): Promise<void> {
+  const spinnerDir = spinner();
+  spinnerDir.start("アップデートを確認中...");
+  const res = await fetch(REPOSITORY_URL, { redirect: "follow" });
+
+  if (!res.ok) {
+    spinnerDir.stop(
+      pc.red(`アップデートを確認できませんでした: ${res.statusText}`),
+    );
+    return;
+  }
+
+  const url = new URL(res.url);
+  const latestVersion = url.pathname.split("/").at(-1)?.replace("v", "");
+
+  if (latestVersion !== packageJson.version) {
+    spinnerDir.stop(
+      `
+   新しいバージョンが見つかりました！ v${
+     packageJson.version
+   } -> v${latestVersion}
+   更新するには以下のコマンドを実行してください:
+   ${pc.yellow(`brew upgrade ${FORMULA_URL}`)}
+
+   または, 以下の URL から最新バージョンをダウンロードできます:
+   ${pc.yellow(REPOSITORY_URL)}
+
+   ${pc.gray("終了します...")}
+      `.trim(),
+    );
+
+    throw new Error("Found new version.");
+  }
+
+  spinnerDir.stop(pc.green("最新バージョンです！ やったー！"));
+}
+
 function checkCancel<T>(data: T): ExcludeSymbol<T> | never {
   if (isCancel(data)) {
     cancel("キャンセルしました");
@@ -42,7 +82,7 @@ function checkCancel<T>(data: T): ExcludeSymbol<T> | never {
 
 const getStudentId = async (): Promise<string> => {
   const id = await text({
-    message: "まず, 学籍番号を教えてください.",
+    message: "学籍番号は入力してください",
     placeholder: "k2xxxx",
     validate: (value) => {
       if (!value.match(/^k2\d{4}$/)) {
@@ -79,7 +119,13 @@ const getSourceDirectory = async (): Promise<string> => {
   const directory = await text({
     message:
       "ソースコードを含んだディレクトリを指定してください (Finder から D&D しても OK)",
-    placeholder: "~/src/prg1k/src/05",
+    placeholder: "~/src/prg1k/src/05 など",
+    validate: (value) => {
+      if (value === "") {
+        return "ディレクトリを指定してください";
+      }
+      return undefined;
+    },
   });
   return checkCancel(directory)
     .replace(/^['"]|['"]$/g, "")
@@ -88,11 +134,11 @@ const getSourceDirectory = async (): Promise<string> => {
 
 const validateSourceDirectory = async (src: string): Promise<void> => {
   if (!(await exists(src))) {
-    checkCancel("指定されたディレクトリが存在しません！");
+    cancel("指定されたディレクトリが存在しません！");
     process.exit(1);
   }
   if (!(await stat(src)).isDirectory()) {
-    checkCancel("指定されたパスはディレクトリではありません！");
+    cancel("指定されたパスはディレクトリではありません！");
     process.exit(1);
   }
 };
@@ -118,11 +164,11 @@ const getPrefix = async (init: string | undefined): Promise<string> => {
   const prefix =
     (await text({
       message: "ファイル名の最初につける文字を入力してください",
-      placeholder: `(講義回: \`05_\` など.  Enter: ${
+      placeholder: `講義回: \`05_\` など.  Enter キーで ${
         init != null
           ? `\`${pc.yellow(init)}\` (親ディレクトリー名)`
           : `${pc.yellow("<何も付けない>")}`
-      })`,
+      }`,
       initialValue: "",
       validate: (value) => {
         if (value.match(/[\\/:*?"<>|]/) != null) {
@@ -138,7 +184,7 @@ const getSuffix = async (init: string | undefined): Promise<string> => {
   const suffix =
     (await text({
       message: "ファイル名の最後につける文字を入力してください",
-      placeholder: `Enter: ${
+      placeholder: `Enter キーで ${
         init != null ? pc.yellow(init) : pc.yellow("<何も付けない>")
       }`,
       initialValue: "",
@@ -249,8 +295,12 @@ const openPath = async (path: string): Promise<void> => {
 
 const main = async (): Promise<void> => {
   intro(
-    `Cook Zip v${packageJson.version} — プログラミング実習の提出物を ZIP にするよ`,
+    `${pc.yellow(
+      `Cook Zip v${packageJson.version}`,
+    )} — プログラミング実習の提出物を ZIP にするよ`,
   );
+
+  await checkUpdate();
 
   const name = await getStudentId();
   const kind = await getSubmissionType();
