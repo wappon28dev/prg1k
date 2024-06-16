@@ -118,8 +118,10 @@ const getPrefix = async (init: string | undefined): Promise<string> => {
   const prefix =
     (await text({
       message: "ファイル名の最初につける文字を入力してください",
-      placeholder: `(講義回: \`05_\` など.  \`Enter\` で${
-        init != null ? ` \`${init}\` (親ディレクトリー名)` : "何もつけない"
+      placeholder: `(講義回: \`05_\` など.  Enter: ${
+        init != null
+          ? `\`${pc.yellow(init)}\` (親ディレクトリー名)`
+          : `${pc.yellow("<何も付けない>")}`
       })`,
       initialValue: "",
       validate: (value) => {
@@ -132,15 +134,13 @@ const getPrefix = async (init: string | undefined): Promise<string> => {
   return checkCancel(prefix);
 };
 
-const getSuffix = async (kind: Kind, name: string): Promise<string> => {
-  const init = kind === "issues" ? `_${name}` : "";
+const getSuffix = async (init: string | undefined): Promise<string> => {
   const suffix =
     (await text({
       message: "ファイル名の最後につける文字を入力してください",
-      placeholder:
-        kind === "issues"
-          ? `(Enter で _<学籍番号: \`${init}\`> を入力)`
-          : "(Enter で何もつけない)",
+      placeholder: `Enter: ${
+        init != null ? pc.yellow(init) : pc.yellow("<何も付けない>")
+      }`,
       initialValue: "",
       validate: (value) => {
         if (value.match(/[\\/:*?"<>|]/) != null) {
@@ -261,15 +261,26 @@ const main = async (): Promise<void> => {
   const options = files.map((f) => ({ value: f, label: f }));
   const filePathList = await selectFiles(options);
 
-  const _parentDir = match(src.split("/").at(-1))
+  const _parentDirNameLast = match(src.split("/").at(-1))
     .when(
       (s) => s?.match(/^\d{2}$/) != null,
       (s) => `${s}_`,
     )
     .otherwise(() => undefined);
 
-  const prefix = await getPrefix(_parentDir);
-  const suffix = await getSuffix(kind, name);
+  const _filesSuffix = match(files)
+    .when(
+      () => kind !== "issues",
+      () => undefined,
+    )
+    .when(
+      (fs) => fs.every((f) => f.match(/_k\d{5}.c$/) != null),
+      () => undefined,
+    )
+    .otherwise(() => `_${name}`);
+
+  const prefix = await getPrefix(_parentDirNameLast);
+  const suffix = await getSuffix(_filesSuffix);
   const namedFiles = renameFiles(filePathList, prefix, suffix);
   const highlightedFiles = highlightFileNames(filePathList, prefix, suffix);
 
