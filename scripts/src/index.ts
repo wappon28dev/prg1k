@@ -1,3 +1,4 @@
+import { exec } from "child_process";
 import { exists, stat, readdir, mkdtemp, copyFile } from "fs/promises";
 import { tmpdir } from "os";
 import { join } from "path";
@@ -13,8 +14,9 @@ import {
   isCancel,
 } from "@clack/prompts";
 import AdmZip from "adm-zip";
-import { $ } from "bun";
+import packageJson from "packageJson";
 import pc from "picocolors";
+import { match } from "ts-pattern";
 
 type Kind = "practice" | "issues";
 interface FileOption {
@@ -232,8 +234,18 @@ const createZip = async (
   return zipPath;
 };
 
+const openPath = async (path: string): Promise<void> => {
+  const command = match(process.platform)
+    .with("win32", () => "explorer")
+    .with("darwin", () => "open")
+    .otherwise(() => "xdg-open");
+  exec(`${command} ${path}`);
+};
+
 const main = async (): Promise<void> => {
-  intro("Cook Zip v2 — プログラミング実習の提出物を ZIP にするよ");
+  intro(
+    `Cook Zip v${packageJson.version} — プログラミング実習の提出物を ZIP にするよ`,
+  );
 
   const name = await getStudentId();
   const kind = await getSubmissionType();
@@ -258,7 +270,8 @@ const main = async (): Promise<void> => {
 
   outro("さようなら！");
   await waitMs(1000);
-  await $`open ${zipPath}`;
+
+  await openPath(zipPath);
 };
 
 main().catch((err) => {

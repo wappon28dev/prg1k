@@ -1,11 +1,13 @@
 {
   "name": "scripts",
   "module": "src/index.ts",
+  "version": "2.0.0",
   "type": "module",
   "dependencies": {
     "@clack/prompts": "^0.7.0",
     "adm-zip": "^0.5.12",
     "picocolors": "^1.0.1",
+    "ts-pattern": "^5.2.0",
     "yargs": "^17.7.2"
   },
   "peerDependencies": {
