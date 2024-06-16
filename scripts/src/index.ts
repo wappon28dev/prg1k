@@ -311,14 +311,18 @@ const main = async (): Promise<void> => {
   const options = files.map((f) => ({ value: f, label: f }));
   const filePathList = await selectFiles(options);
 
-  const _parentDirNameLast = match(src.split("/").at(-1))
+  const _prefix = match(src.split("/").at(-1))
+    .when(
+      () => filePathList.every((f) => f.match(/^\d{2}_\d{2}_/) != null),
+      () => undefined,
+    )
     .when(
       (s) => s?.match(/^\d{2}$/) != null,
       (s) => `${s}_`,
     )
     .otherwise(() => undefined);
 
-  const _filesSuffix = match(files)
+  const _suffix = match(filePathList)
     .when(
       () => kind !== "issues",
       () => undefined,
@@ -329,8 +333,8 @@ const main = async (): Promise<void> => {
     )
     .otherwise(() => `_${name}`);
 
-  const prefix = await getPrefix(_parentDirNameLast);
-  const suffix = await getSuffix(_filesSuffix);
+  const prefix = await getPrefix(_prefix);
+  const suffix = await getSuffix(_suffix);
   const namedFiles = renameFiles(filePathList, prefix, suffix);
   const highlightedFiles = highlightFileNames(filePathList, prefix, suffix);
 
