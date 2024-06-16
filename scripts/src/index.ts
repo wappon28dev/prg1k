@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import { exec } from "child_process";
 import { exists, stat, readdir, mkdtemp, copyFile } from "fs/promises";
 import { tmpdir } from "os";
@@ -78,7 +79,7 @@ const getSourceDirectory = async (): Promise<string> => {
   const directory = await text({
     message:
       "ソースコードを含んだディレクトリを指定してください (Finder から D&D しても OK)",
-    placeholder: "~/development/prg1k/src/05",
+    placeholder: "~/src/prg1k/src/05",
   });
   return checkCancel(directory)
     .replace(/^['"]|['"]$/g, "")
@@ -107,43 +108,47 @@ const readDirectory = async (src: string): Promise<string[]> => {
 const selectFiles = async (options: FileOption[]): Promise<string[]> => {
   const selectedFiles = (await multiselect({
     message:
-      "ZIP にしたいファイルを選択してください (↑↓ で移動, Space で選択, Enter で確定, a で全選択)",
+      "ZIP にしたいファイルを選択してください (移動: ↑↓, 選択: Space, 確定: Enter, 全選択: a)",
     options,
   })) as string[];
   return checkCancel(selectedFiles);
 };
 
-const getPrefix = async (): Promise<string> => {
-  const prefix = await text({
-    message: "ファイル名の最初につける文字を入力してください",
-    placeholder: "(`05_` など.  `Enter` で何もつけない)",
-    initialValue: "",
-    validate: (value) => {
-      if (value.match(/[\\\/:\*\?\"<>\|]/)) {
-        return "ファイル名に使える文字で入力してください";
-      }
-      return undefined;
-    },
-  });
+const getPrefix = async (init: string | undefined): Promise<string> => {
+  const prefix =
+    (await text({
+      message: "ファイル名の最初につける文字を入力してください",
+      placeholder: `(講義回: \`05_\` など.  \`Enter\` で${
+        init != null ? ` \`${init}\` (親ディレクトリー名)` : "何もつけない"
+      })`,
+      initialValue: "",
+      validate: (value) => {
+        if (value.match(/[\\/:*?"<>|]/) != null) {
+          return "ファイル名に使える文字で入力してください";
+        }
+        return undefined;
+      },
+    })) ?? init;
   return checkCancel(prefix);
 };
 
 const getSuffix = async (kind: Kind, name: string): Promise<string> => {
   const init = kind === "issues" ? `_${name}` : "";
-  const suffix = await text({
-    message: "ファイル名の最後につける文字を入力してください",
-    placeholder:
-      kind === "issues"
-        ? `(Enter で _<学籍番号 (大文字始まり)> を入力)`
-        : "(Enter で何もつけない)",
-    initialValue: init,
-    validate: (value) => {
-      if (value.match(/[\\\/:\*\?\"<>\|]/)) {
-        return "ファイル名に使える文字で入力してください";
-      }
-      return undefined;
-    },
-  });
+  const suffix =
+    (await text({
+      message: "ファイル名の最後につける文字を入力してください",
+      placeholder:
+        kind === "issues"
+          ? `(Enter で _<学籍番号: \`${init}\`> を入力)`
+          : "(Enter で何もつけない)",
+      initialValue: "",
+      validate: (value) => {
+        if (value.match(/[\\/:*?"<>|]/) != null) {
+          return "ファイル名に使える文字で入力してください";
+        }
+        return undefined;
+      },
+    })) ?? init;
   return checkCancel(suffix);
 };
 
@@ -256,7 +261,14 @@ const main = async (): Promise<void> => {
   const options = files.map((f) => ({ value: f, label: f }));
   const filePathList = await selectFiles(options);
 
-  const prefix = await getPrefix();
+  const _parentDir = match(src.split("/").at(-1))
+    .when(
+      (s) => s?.match(/^\d{2}$/) != null,
+      (s) => `${s}_`,
+    )
+    .otherwise(() => undefined);
+
+  const prefix = await getPrefix(_parentDir);
   const suffix = await getSuffix(kind, name);
   const namedFiles = renameFiles(filePathList, prefix, suffix);
   const highlightedFiles = highlightFileNames(filePathList, prefix, suffix);
