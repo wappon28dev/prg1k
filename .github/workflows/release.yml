@@ -1,0 +1,51 @@
+name: release
+
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - "v*"
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    if: contains(github.event.head_commit.message, '[skip ci]') == false
+    env:
+      VERSION: ${{ github.ref }}
+
+    steps:
+      - name: 📥 Checkout repository
+        uses: actions/checkout@v4
+
+      - name: 📸 Calculate commit hash
+        id: sha
+        uses: pr-mpt/actions-commit-hash@v3
+
+      - name: 🔨 Prepare Bun environment
+        uses: oven-sh/setup-bun@v1
+
+      - name: 🎉 Install project dependencies
+        run: bun i
+        working-directory: ./scripts
+
+      - name: 🚀 Build project (Linux)
+        run: bun build src/index.ts --compile --target=bun-linux-x64 --outfile ../out/${{ env.VERSION }}/cook-zip-linux-x64
+        working-directory: ./scripts
+      - name: 🚀 Build project (Windows)
+        run: bun build src/index.ts --compile --target=bun-windows-x64 --outfile ../out/${{ env.VERSION }}/cook-zip-windows-x64.exe
+        working-directory: ./scripts
+      - name: 🚀 Build project (macOS)
+        run: bun build src/index.ts --compile --target=bun-macos-x64 --outfile ../out/${{ env.VERSION }}/cook-zip-macos-x64
+        working-directory: ./scripts
+
+      - name: 📦 Create release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: |
+            out/${{ env.VERSION }}/cook-zip-linux-x64
+            out/${{ env.VERSION }}/cook-zip-windows-x64.exe
+            out/${{ env.VERSION }}/cook-zip-macos-x64
+          token: ${{ secrets.GITHUB_TOKEN }}
+          tag_name: ${{ env.VERSION }}
