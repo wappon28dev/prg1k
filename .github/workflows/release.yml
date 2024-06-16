@@ -29,22 +29,22 @@ jobs:
         working-directory: ./scripts
 
       - name: 🚀 Build project (Linux)
-        run: bun build src/index.ts --compile --target=bun-linux-x64 --outfile ../out/cook-zip-${{ env.VERSION }}-linux-x64
+        run: bun build src/index.ts --compile --target=bun-linux-x64 --outfile ../out/cook-zip-linux-x64
         working-directory: ./scripts
       - name: 🚀 Build project (Windows)
-        run: bun build src/index.ts --compile --target=bun-windows-x64 --outfile ../out/cook-zip-${{ env.VERSION }}-windows-x64.exe
+        run: bun build src/index.ts --compile --target=bun-windows-x64 --outfile ../out/cook-zip-windows-x64.exe
         working-directory: ./scripts
       - name: 🚀 Build project (macOS)
-        run: bun build src/index.ts --compile --target=bun-macos-x64 --outfile ../out/cook-zip-${{ env.VERSION }}-macos-x64
+        run: bun build src/index.ts --compile --target=bun-macos-x64 --outfile ../out/cook-zip-macos-x64
         working-directory: ./scripts
 
       - name: 📦 Create release
         uses: softprops/action-gh-release@v2
         with:
           files: |
-            out/cook-zip-${{ env.VERSION }}-linux-x64
-            out/cook-zip-${{ env.VERSION }}-windows-x64.exe
-            out/cook-zip-${{ env.VERSION }}-macos-x64
+            out/cook-zip-linux-x64
+            out/cook-zip-windows-x64.exe
+            out/cook-zip-macos-x64
           draft: true
           token: ${{ secrets.GITHUB_TOKEN }}
           tag_name: ${{ env.VERSION }}
