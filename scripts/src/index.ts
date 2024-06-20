@@ -360,7 +360,7 @@ const main = async (): Promise<void> => {
   const highlightedFiles = highlightFileNames(filePathList, prefix, suffix);
   const workDir = await mkdtemp(join(tmpdir(), "prg1k-"));
 
-  if (namedFiles.length > 0) {
+  if (namedFiles.length === 0) {
     await confirmNonZipCreation(highlightedFiles);
 
     await copyFiles(filePathList, src, workDir, namedFiles);
@@ -374,6 +374,8 @@ const main = async (): Promise<void> => {
 
     await byebye(zipPath);
   }
+
+  process.exit(0);
 };
 
 main().catch((err) => {
