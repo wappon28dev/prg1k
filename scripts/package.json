@@ -1,7 +1,7 @@
 {
   "name": "scripts",
   "module": "src/index.ts",
-  "version": "2.2.1",
+  "version": "2.3.1",
   "type": "module",
   "dependencies": {
     "@clack/prompts": "^0.7.0",

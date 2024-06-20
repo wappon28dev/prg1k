@@ -241,6 +241,21 @@ const confirmZipCreation = async (
   }
 };
 
+const confirmNonZipCreation = async (
+  highlightedFiles: string[],
+): Promise<void> => {
+  const _confirm = await confirm({
+    message: `おっと！  ファイルを圧縮する必要は無さそうです.  次のファイル名でファイルをコピーしますか？\n - ${highlightedFiles.join(
+      "\n  - ",
+    )} `,
+  });
+  checkCancel(_confirm);
+  if (!_confirm) {
+    cancel("キャンセルしました");
+    process.exit(1);
+  }
+};
+
 const copyFiles = async (
   filePathList: string[],
   src: string,
@@ -293,6 +308,12 @@ const openPath = async (path: string): Promise<void> => {
   exec(`${command} ${path}`);
 };
 
+const byebye = async (path: string): Promise<void> => {
+  outro("さようなら！");
+  await waitMs(1000);
+  await openPath(path);
+};
+
 const main = async (): Promise<void> => {
   intro(
     `${pc.yellow(
@@ -337,18 +358,22 @@ const main = async (): Promise<void> => {
   const suffix = await getSuffix(_suffix);
   const namedFiles = renameFiles(filePathList, prefix, suffix);
   const highlightedFiles = highlightFileNames(filePathList, prefix, suffix);
-
-  await confirmZipCreation(highlightedFiles);
-
   const workDir = await mkdtemp(join(tmpdir(), "prg1k-"));
-  await copyFiles(filePathList, src, workDir, namedFiles);
 
-  const zipPath = await createZip(workDir, kind, name);
+  if (namedFiles.length > 0) {
+    await confirmNonZipCreation(highlightedFiles);
 
-  outro("さようなら！");
-  await waitMs(1000);
+    await copyFiles(filePathList, src, workDir, namedFiles);
 
-  await openPath(zipPath);
+    await byebye(workDir);
+  } else {
+    await confirmZipCreation(highlightedFiles);
+
+    await copyFiles(filePathList, src, workDir, namedFiles);
+    const zipPath = await createZip(workDir, kind, name);
+
+    await byebye(zipPath);
+  }
 };
 
 main().catch((err) => {

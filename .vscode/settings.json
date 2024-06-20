@@ -2,9 +2,16 @@
   "debug.console.collapseIdenticalLines": false,
   "workbench.panel.defaultLocation": "left",
   "files.associations": {
+    "*.md": "markdown",
     "stdio.h": "c",
     "__config": "c",
-    "stdbool.h": "c"
+    "stdbool.h": "c",
+    "__bit_reference": "c",
+    "bitset": "c"
   },
-  "cSpell.words": ["outro", "Treatmentable"]
+  "cSpell.words": [
+    "byebye",
+    "outro",
+    "Treatmentable"
+  ]
 }
