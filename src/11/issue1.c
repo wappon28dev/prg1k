@@ -13,7 +13,7 @@ int main(int argc, char *argv[])
   char palindrome[LENGTH + 1] = {'\0'};
   int len = strlen(input);
 
-  for (int i = 0; i < LENGTH; i++)
+  for (int i = 0; i < len; i++)
   {
     palindrome[i] = input[len - i - 1];
   }
