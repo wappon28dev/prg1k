@@ -6,12 +6,13 @@
       "type": "cppdbg",
       "request": "launch",
       "program": "${workspaceFolder}/out/a",
+      "args": ["<", "${fileDirname}/${fileBasenameNoExtension}.stdin"],
       "stopAtEntry": false,
       "preLaunchTask": "build",
       "cwd": "${workspaceFolder}",
       "environment": [],
-      "MIMode": "gdb",
-      "miDebuggerPath": "/usr/bin/gdb",
+      "externalConsole": true,
+      "MIMode": "lldb",
       "setupCommands": [
         {
           "description": "Enable pretty-printing for gdb",
