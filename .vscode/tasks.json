@@ -5,8 +5,7 @@
       "label": "build",
       "command": "gcc",
       "args": [
-        "-fcolor-diagnostics",
-        "-fansi-escape-codes",
+        "-fdiagnostics-color=always",
         "-g",
         "${file}",
         "-o",
@@ -18,7 +17,9 @@
       "presentation": {
         "reveal": "silent"
       },
-      "problemMatcher": ["$gcc"],
+      "problemMatcher": [
+        "$gcc"
+      ],
       "group": {
         "kind": "build",
         "isDefault": true
