@@ -8,7 +8,8 @@
 		"vscode": {
 			"extensions": [
 				"ms-vscode.cpptools-extension-pack",
-				"usernamehw.errorlens"
+				"usernamehw.errorlens",
+				"streetsidesoftware.code-spell-checker"
 			]
 		}
 	}
