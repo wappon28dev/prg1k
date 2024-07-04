@@ -9,7 +9,8 @@
     "__bit_reference": "c",
     "bitset": "c",
     "string": "c",
-    "string_view": "c"
+    "string_view": "c",
+    "math.h": "c"
   },
   "cSpell.words": [
     "byebye",
