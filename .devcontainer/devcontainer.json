@@ -9,7 +9,9 @@
 			"extensions": [
 				"ms-vscode.cpptools-extension-pack",
 				"usernamehw.errorlens",
-				"streetsidesoftware.code-spell-checker"
+				"streetsidesoftware.code-spell-checker",
+				"ms-vscode.cmake-tools",
+				"twxs.cmake"
 			]
 		}
 	}

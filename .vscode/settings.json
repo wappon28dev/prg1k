@@ -11,7 +11,9 @@
     "string": "c",
     "string_view": "c",
     "math.h": "c",
-    "main.h": "c"
+    "main.h": "c",
+    "tinycursesc.h": "c",
+    "miniz.h": "c"
   },
   "cSpell.words": [
     "byebye",
@@ -19,4 +21,5 @@
     "Treatmentable"
   ],
   "cmake.sourceDirectory": "${workspaceFolder}/src/final-assignment",
+  "cmake.ignoreCMakeListsMissing": true
 }
