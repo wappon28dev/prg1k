@@ -62,6 +62,9 @@ async function checkUpdate(): Promise<void> {
    または, 以下の URL から最新バージョンをダウンロードできます:
    ${pc.yellow(REPOSITORY_URL)}
 
+   ${pc.gray(
+     "アップデートに問題がある場合, `$ cook-zip --skip-update` でスキップできます.",
+   )}
    ${pc.gray("終了します...")}
       `.trim(),
     );
@@ -321,7 +324,13 @@ const main = async (): Promise<void> => {
     )} — プログラミング実習の提出物を ZIP にするよ`,
   );
 
-  await checkUpdate();
+  // --skip-update
+  console.log();
+  if (process.argv.at(2)?.includes("--skip-update") ?? false) {
+    console.log(pc.gray("  アップデートチェックをスキップします！"));
+  } else {
+    await checkUpdate();
+  }
 
   const name = await getStudentId();
   const kind = await getSubmissionType();
