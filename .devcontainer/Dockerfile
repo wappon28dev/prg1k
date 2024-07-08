@@ -2,7 +2,7 @@ FROM ubuntu
 
 # Update and install necessary packages
 RUN apt update
-RUN apt install -y cmake gdb
+RUN apt install -y cmake gdb mingw-w64
 
 # For HomeBrew
 RUN apt-get install -y build-essential procps curl file git
