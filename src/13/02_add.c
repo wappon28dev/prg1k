@@ -1,8 +1,8 @@
 #include <stdio.h>
 
-int addOf(int a, int b)
+void dumpAddOf(int a, int b)
 {
-  return a + b;
+  printf("%d + %d = %d\n", a, b, a + b);
 }
 
 int main(int argc, char *argv[])
@@ -10,7 +10,7 @@ int main(int argc, char *argv[])
   int a = 5;
   int b = 10;
 
-  printf("%d + %d = %d\n", a, b, addOf(a, b));
+  dumpAddOf(a, b);
 
   return 0;
 }
