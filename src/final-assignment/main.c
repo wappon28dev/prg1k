@@ -1,39 +1,38 @@
 #include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#include "./lib/dir.c"
+#include "./lib/types.c"
+#include "./lib/zip.c"
 
 #define MINIZ_HEADER_FILE_ONLY
-#include "lib/miniz/miniz.c"
 
 int main()
 {
+  ResultDirStruct r_dir_files = get_dir_files("/Users/wataru/development/prg1k/src/13");
 
-  const char *zipFileName = "test.zip";
-
-  mz_zip_archive zip_archive;
-  memset(&zip_archive, 0, sizeof(zip_archive));
-
-  if (!mz_zip_writer_init_file_v2(&zip_archive, zipFileName, 0, 0))
+  if (r_dir_files.err_message != NULL)
   {
-    printf("Failed to initialize zip writer\n");
-    return -1;
+    fprintf(stderr, "ERROR: %s\n", r_dir_files.err_message);
+    exit(EXIT_FAILURE);
   }
 
-  const char *filename = "test.txt";
-  const char *fileContents = "Hello, World!";
+  DirStuct dir_struct = r_dir_files.value;
 
-  if (!mz_zip_writer_add_mem(&zip_archive, filename, fileContents, strlen(fileContents), MZ_BEST_COMPRESSION))
+  ResultZipEntry r_zip_entry = create_zip_entry("output.zip", dir_struct);
+
+  if (r_zip_entry.err_message != NULL)
   {
-    printf("Failed to add file to zip\n");
-    return -1;
+    fprintf(stderr, "ERROR: %s\n", r_zip_entry.err_message);
+    exit(EXIT_FAILURE);
   }
 
-  if (!mz_zip_writer_finalize_archive(&zip_archive))
+  for (int i = 0; i < r_zip_entry.value.file_entry_count; i++)
   {
-    printf("Failed to finalize zip archive!\n");
-    mz_zip_writer_end(&zip_archive);
-    return -1;
+    printf("[%02d] %s\n", i, r_zip_entry.value.fileEntries[i].path);
+    printf("%s\n", r_zip_entry.value.fileEntries[i].content);
   }
 
-  mz_zip_writer_end(&zip_archive);
-
-  printf("ZIP file created successfully!\n");
+  return EXIT_SUCCESS;
 }
