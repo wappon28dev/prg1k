@@ -8,30 +8,36 @@
 
 #define MINIZ_HEADER_FILE_ONLY
 
-int main()
+ResultVoid _main()
 {
   ResultDirStruct r_dir_files = get_dir_files("/Users/wataru/development/prg1k/src/13");
 
   if (r_dir_files.err_message != NULL)
   {
-    fprintf(stderr, "ERROR: %s\n", r_dir_files.err_message);
-    exit(EXIT_FAILURE);
+    return (ResultVoid){.err_message = r_dir_files.err_message};
   }
 
-  DirStuct dir_struct = r_dir_files.value;
-
-  ResultZipEntry r_zip_entry = create_zip_entry("output.zip", dir_struct);
+  ResultZipEntry r_zip_entry = create_zip_entry("output.zip", r_dir_files.value);
 
   if (r_zip_entry.err_message != NULL)
   {
-    fprintf(stderr, "ERROR: %s\n", r_zip_entry.err_message);
-    exit(EXIT_FAILURE);
+    return (ResultVoid){.err_message = r_zip_entry.err_message};
   }
 
-  for (int i = 0; i < r_zip_entry.value.file_entry_count; i++)
+  ResultVoid r_zip = create_zip(r_zip_entry.value);
+
+  puts("Success!");
+
+  return (ResultVoid){};
+}
+
+int main()
+{
+
+  ResultVoid result = _main();
+  if (result.err_message != NULL)
   {
-    printf("[%02d] %s\n", i, r_zip_entry.value.fileEntries[i].path);
-    printf("%s\n", r_zip_entry.value.fileEntries[i].content);
+    handle_unhanded_error(result.err_message);
   }
 
   return EXIT_SUCCESS;

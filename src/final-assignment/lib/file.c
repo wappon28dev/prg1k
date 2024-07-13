@@ -9,7 +9,7 @@
 
 #define MAX_LINE_LENGTH 1024
 
-ResultChar get_file_content(char *file_path)
+ResultChar get_file_content(const char *file_path)
 {
   FILE *file = fopen(file_path, "r");
   char line[MAX_LINE_LENGTH];
@@ -45,13 +45,3 @@ ResultChar get_file_content(char *file_path)
 
   return (ResultChar){.value = content};
 }
-
-// int main(void)
-// {
-//   char *input_filename = "./LICENSE";
-//   char *content = get_file_content(input_filename);
-
-//   puts(content);
-
-//   return EXIT_SUCCESS;
-// }

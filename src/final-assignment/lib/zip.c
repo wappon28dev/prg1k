@@ -10,7 +10,7 @@
 
 #define MINIZ_HEADER_FILE_ONLY
 
-ResultZipEntry create_zip_entry(const char *zip_file_name, DirStuct value)
+ResultZipEntry create_zip_entry(const char *zip_file_path, DirStuct value)
 {
   FileEntry file_entries[ARR_MAX] = {};
 
@@ -34,13 +34,13 @@ ResultZipEntry create_zip_entry(const char *zip_file_name, DirStuct value)
   }
 
   ZipEntry zip_entry = {
-      .zip_file_name = (char *)zip_file_name,
-      .file_entry_count = value.file_count,
+      .zip_file_path = (char *)zip_file_path, .file_entry_count = value.file_count,
+      // .file_entries = file_entries,
   };
 
   for (int i = 0; i < value.file_count; i++)
   {
-    zip_entry.fileEntries[i] = file_entries[i];
+    zip_entry.file_entries[i] = file_entries[i];
   }
 
   return (ResultZipEntry){.value = zip_entry};
@@ -51,7 +51,7 @@ ResultVoid create_zip(ZipEntry zip_entry)
   mz_zip_archive zip_archive;
   memset(&zip_archive, 0, sizeof(zip_archive));
 
-  bool init_result = mz_zip_writer_init_file_v2(&zip_archive, zip_entry.zip_file_name, 0, 0);
+  bool init_result = mz_zip_writer_init_file_v2(&zip_archive, zip_entry.zip_file_path, 0, 0);
   if (!init_result)
   {
     return (ResultVoid){
@@ -61,8 +61,8 @@ ResultVoid create_zip(ZipEntry zip_entry)
 
   for (int i = 0; i < zip_entry.file_entry_count; i++)
   {
-    char *filename = zip_entry.fileEntries[i].path;
-    char *fileContents = zip_entry.fileEntries[i].content;
+    const char *filename = zip_entry.file_entries[i].path;
+    const char *fileContents = zip_entry.file_entries[i].content;
 
     bool writer_add_result =
         mz_zip_writer_add_mem(&zip_archive, filename, fileContents, strlen(fileContents), MZ_BEST_COMPRESSION);

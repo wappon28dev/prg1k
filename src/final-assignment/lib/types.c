@@ -4,28 +4,29 @@
 
 typedef struct
 {
-  char *path;
-  char *content;
+  const char *path;
+  const char *content;
 } FileEntry;
 
+/// Zip ファイルの作成に必要なエントリー
 typedef struct
 {
-  char *zip_file_name;
-  FileEntry fileEntries[ARR_MAX];
+  const char *zip_file_path;
+  FileEntry file_entries[ARR_MAX];
   int file_entry_count;
 } ZipEntry;
 
 typedef struct
 {
-  char *err_message;
+  const char *err_message;
   ZipEntry value;
 } ResultZipEntry;
 
 typedef struct
 {
   /// ディレクトリのパス
-  char *base_path;
-  char *files[ARR_MAX];
+  const char *base_path;
+  const char *files[ARR_MAX];
   int file_count;
 } DirStuct;
 
@@ -35,18 +36,19 @@ typedef struct
 typedef struct
 {
   DirStuct value;
-  char *err_message;
+  const char *err_message;
 } ResultDirStruct;
 
 /// Result<DirStruct>
 /// - 失敗した場合は `err_message` にエラーメッセージが格納される
 typedef struct
 {
-  char *err_message;
+  const char *err_message;
+  const char *cause;
 } ResultVoid;
 
 typedef struct
 {
-  char *error_message;
-  char *value;
+  const char *error_message;
+  const char *value;
 } ResultChar;
