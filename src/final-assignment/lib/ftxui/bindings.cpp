@@ -4,6 +4,8 @@
 #include "ftxui/component/screen_interactive.hpp"
 #include "ftxui/dom/elements.hpp"
 #include "ftxui/screen/color.hpp"
+
+#include <algorithm>
 #include <iostream>
 
 #include "../dir.c"
@@ -164,15 +166,59 @@ ResultUserData cpp_ask_user_data()
   return (ResultUserData){.value = {.student_id = student_id.c_str(), .mode = (Mode)selected, .path = path.c_str()}};
 }
 
+std::vector<std::string> dir_files_to_vector(DirStruct dir_struct)
+{
+  std::vector<std::string> files;
+  for (int i = 0; i < 100; i++)
+  {
+    if (dir_struct.files[i] == NULL)
+    {
+      break;
+    }
+
+    files.push_back(dir_struct.files[i]);
+  }
+
+  return files;
+}
+
 ResultDirStruct cpp_ask_dir_struct(DirStruct dir_struct)
 {
   auto screen = ScreenInteractive::TerminalOutput();
 
-  auto component = Container::Vertical({});
+  auto files = dir_files_to_vector(dir_struct);
+  auto input_lists = Container::Vertical({});
+  std::vector<int> selected_idx_list = {};
+
+  for (int i = 0; i < files.size(); i++)
+  {
+    bool is_selected = std::find(selected_idx_list.begin(), selected_idx_list.end(), i) != selected_idx_list.end();
+
+    input_lists->Add(Checkbox(files[i], &is_selected,
+                              CheckboxOption{
+                                  .on_change =
+                                      [&] {
+                                        if (is_selected)
+                                        {
+                                          selected_idx_list.erase(
+                                              std::remove(selected_idx_list.begin(), selected_idx_list.end(), i),
+                                              selected_idx_list.end());
+                                        }
+                                        else
+                                        {
+                                          selected_idx_list.push_back(i);
+                                        }
+                                      },
+                              }));
+  }
+
+  auto component = Container::Vertical({
+      input_lists,
+  });
 
   auto renderer = Renderer(component, [&] {
     return hbox({
-               text("left-column"),
+               input_lists->Render() | vscroll_indicator | frame,
                separator(),
                vbox({
                    center(text("top")) | flex,
