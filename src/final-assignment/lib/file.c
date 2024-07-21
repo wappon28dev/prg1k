@@ -18,7 +18,7 @@ ResultChar get_file_content(const char *file_path)
 
   if (!file)
   {
-    return (ResultChar){.error_message = "Failed to open file"};
+    return (ResultChar){.err_message = "Failed to open file"};
   }
 
   while (fgets(line, MAX_LINE_LENGTH, file))
@@ -28,7 +28,7 @@ ResultChar get_file_content(const char *file_path)
     if (!content)
     {
       fclose(file);
-      return (ResultChar){.error_message = "Failed to allocate memory"};
+      return (ResultChar){.err_message = "Failed to allocate memory"};
     }
 
     strcpy(content + content_size, line);

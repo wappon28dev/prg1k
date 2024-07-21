@@ -20,7 +20,6 @@ endif()
 
 add_executable(cook-zip-c main.c lib/ftxui/bindings.cpp)
 target_link_libraries(cook-zip-c PRIVATE ftxui::component)
-target_link_libraries(cook-zip-c PRIVATE ncurses)
 
 enable_testing()
 

@@ -5,32 +5,32 @@
 #include "./lib/dir.c"
 #include "./lib/ftxui/bindings.h"
 #include "./lib/types.c"
+#include "./lib/validate.c"
 #include "./lib/zip.c"
 
 #define MINIZ_HEADER_FILE_ONLY
 
 ResultVoid _main()
 {
-  // ResultDirStruct r_dir_files = get_dir_files("/Users/wataru/development/prg1k/src/13");
 
-  // if (r_dir_files.err_message != NULL)
+  puts(LOGO);
+
+  // ResultUserData r_ask_user_data = cpp_ask_user_data();
+
+  // if (r_ask_user_data.err_message != NULL)
   // {
-  //   return (ResultVoid){.err_message = r_dir_files.err_message};
+  //   return (ResultVoid){.err_message = r_ask_user_data.err_message};
   // }
 
-  // ResultZipEntry r_zip_entry = create_zip_entry("output.zip", r_dir_files.value);
+  // ResultDirStruct r_ask_dir_struct = get_dir_files(r_ask_user_data.value.path);
+  ResultDirStruct r_ask_dir_struct = get_dir_files("/workspaces");
 
-  // if (r_zip_entry.err_message != NULL)
-  // {
-  //   return (ResultVoid){.err_message = r_zip_entry.err_message};
-  // }
+  if (r_ask_dir_struct.err_message != NULL)
+  {
+    return (ResultVoid){.err_message = r_ask_dir_struct.err_message};
+  }
 
-  // ResultVoid r_zip = create_zip(r_zip_entry.value);
-
-  // puts("Success!");
-
-  // hoge();
-  cpp_function();
+  r_ask_dir_struct = cpp_ask_dir_struct(r_ask_dir_struct.value);
 
   return (ResultVoid){};
 }

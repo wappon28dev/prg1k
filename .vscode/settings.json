@@ -72,7 +72,10 @@
     "tuple": "cpp",
     "unordered_map": "cpp",
     "vector": "cpp",
-    "algorithm": "cpp"
+    "algorithm": "cpp",
+    "types.c": "cpp",
+    "validate.c": "cpp",
+    "dir.c": "cpp"
   },
   "cSpell.words": [
     "byebye",

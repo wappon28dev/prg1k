@@ -10,7 +10,7 @@
 
 #define MINIZ_HEADER_FILE_ONLY
 
-ResultZipEntry create_zip_entry(const char *zip_file_path, DirStuct value)
+ResultZipEntry create_zip_entry(const char *zip_file_path, DirStruct value)
 {
   FileEntry file_entries[ARR_MAX] = {};
 
@@ -21,9 +21,9 @@ ResultZipEntry create_zip_entry(const char *zip_file_path, DirStuct value)
 
     ResultChar r_file_content = get_file_content(file_path);
 
-    if (r_file_content.error_message != NULL)
+    if (r_file_content.err_message != NULL)
     {
-      fprintf(stderr, "ERROR: %s\n", r_file_content.error_message);
+      fprintf(stderr, "ERROR: %s\n", r_file_content.err_message);
       exit(EXIT_FAILURE);
     }
 
@@ -34,7 +34,7 @@ ResultZipEntry create_zip_entry(const char *zip_file_path, DirStuct value)
   }
 
   ZipEntry zip_entry = {
-      .zip_file_path = (char *)zip_file_path, .file_entry_count = value.file_count,
+      .zip_file_path = (char *)zip_file_path, .file_entries_length = value.file_count,
       // .file_entries = file_entries,
   };
 
@@ -59,7 +59,7 @@ ResultVoid create_zip(ZipEntry zip_entry)
     };
   }
 
-  for (int i = 0; i < zip_entry.file_entry_count; i++)
+  for (int i = 0; i < zip_entry.file_entries_length; i++)
   {
     const char *filename = zip_entry.file_entries[i].path;
     const char *fileContents = zip_entry.file_entries[i].content;

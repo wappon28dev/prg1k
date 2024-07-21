@@ -6,15 +6,14 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "./consts.c"
 #include "./types.c"
 
 /// @brief ディレクトリー内のファイルの一覧を取得する
 /// @param dir_path 探索ディレクトリーのパス
 /// @return Result<DirStruct>
-ResultDirStruct get_dir_files(char *dir_path)
+ResultDirStruct get_dir_files(const char *dir_path)
 {
-  DirStuct value = {.base_path = dir_path, .file_count = 0};
+  DirStruct value = {.base_path = dir_path, .file_count = 0};
   DIR *dir = opendir(dir_path);
 
   if (dir == NULL)
@@ -27,7 +26,7 @@ ResultDirStruct get_dir_files(char *dir_path)
 
   while ((entry = readdir(dir)) != NULL && idx < ARR_MAX)
   {
-    value.files[idx] = malloc(strlen(entry->d_name) + 1);
+    value.files[idx] = (char *)malloc(strlen(entry->d_name) + 1);
 
     if (value.files[idx] == NULL)
     {
@@ -36,7 +35,6 @@ ResultDirStruct get_dir_files(char *dir_path)
     }
 
     value.files[idx] = strdup(entry->d_name);
-    printf("DIR_FILE: %d -> %s\n", idx, value.files[idx]);
     idx++;
   }
 
