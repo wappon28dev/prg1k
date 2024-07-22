@@ -9,43 +9,11 @@
 #include <iostream>
 
 #include "../dir.c"
+#include "../file.c"
 #include "../validate.c"
 #include "./bindings.h"
 
 using namespace ftxui;
-
-ResultVoid print_text(char *body)
-{
-  auto document = text(body);
-
-  auto screen = Screen::Create(Dimension::Full(), Dimension::Fit(document));
-  Render(screen, document);
-
-  std::cout << screen.ToString() << '\0' << std::endl;
-  return (ResultVoid){};
-}
-
-ResultVoid cpp_function()
-{
-
-  auto screen = ScreenInteractive::TerminalOutput();
-
-  std::vector<std::string> entries = {
-      "PULL: 受信",
-      "PUSH: 送信",
-  };
-  int selected = 0;
-
-  MenuOption option;
-  option.on_enter = screen.ExitLoopClosure();
-  auto menu = Menu(&entries, &selected, option);
-
-  screen.Loop(menu);
-
-  std::cout << "mode = " << selected << std::endl;
-
-  return (ResultVoid){};
-}
 
 ResultUserData cpp_ask_user_data()
 {
@@ -163,6 +131,10 @@ ResultUserData cpp_ask_user_data()
 
   screen.Loop(renderer);
 
+  printf("student_id: %s\n", student_id.c_str());
+  printf("selected: %d\n", selected);
+  printf("path: %s\n", path.c_str());
+
   return (ResultUserData){.value = {.student_id = student_id.c_str(), .mode = (Mode)selected, .path = path.c_str()}};
 }
 
@@ -184,56 +156,133 @@ std::vector<std::string> dir_files_to_vector(DirStruct dir_struct)
 
 ResultDirStruct cpp_ask_dir_struct(DirStruct dir_struct)
 {
-  auto screen = ScreenInteractive::TerminalOutput();
+  auto screen = ScreenInteractive::Fullscreen();
 
+  std::string status;
+  std::string file_content;
   auto files = dir_files_to_vector(dir_struct);
+  sort(files.begin(), files.end());
+
   auto input_lists = Container::Vertical({});
-  std::vector<int> selected_idx_list = {};
+  int focused_idx = 0;
 
-  for (int i = 0; i < files.size(); i++)
+  // NOTE: `std::vector<bool>` は特殊化されているため、`std::deque<bool>` を使う
+  // ref:
+  // https://zenn.dev/reputeless/books/standard-cpp-for-competitive-programming/viewer/vector#%E6%96%B9%E5%BC%8F-c%3A-std%3A%3Adeque%3Cbool%3E-%E3%81%A7%E4%BB%A3%E6%9B%BF%E3%81%99%E3%82%8B
+  std::deque<bool> selected_arr(files.size(), false);
+
+  for (int i = 0; i < 10; i++)
   {
-    bool is_selected = std::find(selected_idx_list.begin(), selected_idx_list.end(), i) != selected_idx_list.end();
-
-    input_lists->Add(Checkbox(files[i], &is_selected,
-                              CheckboxOption{
-                                  .on_change =
-                                      [&] {
-                                        if (is_selected)
-                                        {
-                                          selected_idx_list.erase(
-                                              std::remove(selected_idx_list.begin(), selected_idx_list.end(), i),
-                                              selected_idx_list.end());
-                                        }
-                                        else
-                                        {
-                                          selected_idx_list.push_back(i);
-                                        }
-                                      },
-                              }));
+    input_lists->Add(Checkbox(files[i], &selected_arr[i]));
   }
 
-  auto component = Container::Vertical({
+  auto button = Button("   NEXT >   ", [&] { screen.Exit(); });
+
+  auto components = Container::Vertical({
       input_lists,
+      button,
   });
 
-  auto renderer = Renderer(component, [&] {
-    return hbox({
-               input_lists->Render() | vscroll_indicator | frame,
-               separator(),
-               vbox({
-                   center(text("top")) | flex,
-                   separator(),
-                   center(text("bottom")),
-               }) | flex,
-               separator(),
-               text("right-column"),
-           }) |
+  auto renderer = Renderer(components, [&] {
+    for (int i = 0; i < (input_lists->ChildCount()); i++)
+    {
+      auto component = input_lists->ChildAt(i);
+      auto path = std::string(dir_struct.base_path) + "/" + files[i];
+
+      if (component->Focused())
+      {
+        auto r_content = get_file_content(path.c_str());
+
+        if (r_content.err_message != NULL)
+        {
+          status = "🔧 Focused: `" + path + "`: invalid -> " + std::string(r_content.err_message);
+          continue;
+        }
+
+        file_content = std::string(r_content.value);
+        status = "🔧 Focused: `" + path + "`: " + std::to_string(file_content.length()) + " bytes";
+        focused_idx = i;
+        break;
+      }
+    }
+
+    auto file_content_comp = [&] {
+      std::vector<Element> lines;
+      std::istringstream stream(file_content);
+      std::string line;
+      while (std::getline(stream, line))
+      {
+        lines.push_back(paragraphAlignLeft(line));
+      }
+      return lines;
+    }();
+
+    return vbox({hbox({
+                     input_lists->Render() | vscroll_indicator | frame,
+                     separator(),
+                     vbox(file_content_comp) | vscroll_indicator | frame | flex,
+                 }) | flex,
+                 hbox({
+                     color(Color::GrayDark, text(status)) | border | flex,
+                     button->Render(),
+                 })}) |
            border;
+  });
+
+  renderer |= CatchEvent([&](Event event) {
+    if (event == Event::Character('q'))
+    {
+      screen.ExitLoopClosure()();
+      return true;
+    }
+
+    if (event == Event::Character('a'))
+    {
+      bool is_fully_selected = std::all_of(selected_arr.begin(), selected_arr.end(), [](bool v) { return v; });
+
+      for (int i = 0; i < files.size(); i++)
+      {
+        selected_arr[i] = !is_fully_selected;
+      }
+      return true;
+    }
+
+    if (event == Event::Return)
+    {
+      if (!button->Focused())
+      {
+        button->TakeFocus();
+      }
+      else
+      {
+        screen.Exit();
+      }
+      return true;
+    }
+
+    return false;
   });
 
   screen.Loop(renderer);
 
+  std::vector<std::string> selected_files(files.size());
+  int selected_files_count = 0;
+
+  for (int i = 0; i < files.size(); i++)
+  {
+    if (selected_arr[i])
+    {
+      selected_files[selected_files_count] = files[i].c_str();
+      selected_files_count++;
+    }
+  }
+
   return ResultDirStruct{
-      .value = dir_struct,
+      .value =
+          {
+              .base_path = dir_struct.base_path,
+              .files = (const char *)selected_files.data(),
+              .file_count = selected_files_count,
+          },
   };
 }

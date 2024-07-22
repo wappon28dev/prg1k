@@ -92,15 +92,18 @@
     "semaphore": "cpp",
     "span": "cpp",
     "stop_token": "cpp",
-    "thread": "cpp"
+    "thread": "cpp",
+    "file.c": "cpp"
   },
   "cSpell.words": [
     "byebye",
     "ftxui",
+    "Fullscreen",
     "hbox",
     "MINIZ",
     "outro",
-    "Treatmentable"
+    "Treatmentable",
+    "vscroll"
   ],
   "cmake.sourceDirectory": "${workspaceFolder}/src/final-assignment",
   "cmake.ignoreCMakeListsMissing": true

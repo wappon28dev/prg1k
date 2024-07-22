@@ -4,7 +4,6 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "./consts.c"
 #include "./types.c"
 
 #define MAX_LINE_LENGTH 1024
@@ -24,7 +23,7 @@ ResultChar get_file_content(const char *file_path)
   while (fgets(line, MAX_LINE_LENGTH, file))
   {
     size_t line_length = strlen(line);
-    content = realloc(content, content_size + line_length + 1);
+    content = (char *)realloc(content, content_size + line_length + 1);
     if (!content)
     {
       fclose(file);

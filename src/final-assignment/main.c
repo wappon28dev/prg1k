@@ -23,7 +23,8 @@ ResultVoid _main()
   // }
 
   // ResultDirStruct r_ask_dir_struct = get_dir_files(r_ask_user_data.value.path);
-  ResultDirStruct r_ask_dir_struct = get_dir_files("/workspaces/prg1k/src/13");
+
+  ResultDirStruct r_ask_dir_struct = get_dir_files("/Users/wataru/development/prg1k/build");
 
   if (r_ask_dir_struct.err_message != NULL)
   {
