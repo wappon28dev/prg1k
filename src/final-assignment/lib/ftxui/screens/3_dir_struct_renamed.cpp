@@ -21,6 +21,12 @@
 
 using namespace ftxui;
 
+std::string get_file_name(std::string file_name, std::string prefix, std::string suffix)
+{
+  auto fileName = analyze_file_name(file_name);
+  return prefix + fileName.name + suffix + "." + fileName.ext;
+}
+
 Element get_hightailed_file_name(std::string before, std::string prefix, std::string suffix)
 {
   auto fileName = analyze_file_name(before);
@@ -32,7 +38,7 @@ Element get_hightailed_file_name(std::string before, std::string prefix, std::st
   });
 }
 
-DirStruct cpp_ask_dir_struct_renaming(DirStruct dir_struct, UserData user_data)
+DirStruct cpp_ask_dir_struct_renamed(DirStruct dir_struct, UserData user_data)
 {
   auto screen = ScreenInteractive::Fullscreen();
   auto files = dir_files_to_vector(dir_struct);
@@ -43,8 +49,8 @@ DirStruct cpp_ask_dir_struct_renaming(DirStruct dir_struct, UserData user_data)
       get_suffix(dir_struct.files, dir_struct.file_count, std::to_string(user_data.mode).c_str(), user_data.student_id);
 
   std::string status;
-  std::string prefix = c_prefix ? c_prefix : "";
-  std::string suffix = c_suffix ? c_suffix : "";
+  std::string prefix = c_prefix;
+  std::string suffix = c_suffix;
 
   auto input_prefix = Input(&prefix, InputOption{.placeholder = "Prefix"});
   auto input_suffix = Input(&suffix, InputOption{.placeholder = "Suffix"});
@@ -83,5 +89,14 @@ DirStruct cpp_ask_dir_struct_renaming(DirStruct dir_struct, UserData user_data)
 
   screen.Loop(renderer);
 
-  return dir_struct;
+  DirStruct dir_struct_renamed = {.base_path = dir_struct.base_path, .file_count = dir_struct.file_count};
+
+  for (int i = 0; i < files.size(); i++)
+  {
+    auto file = files[i];
+    auto new_file = get_file_name(file, prefix, suffix);
+    dir_struct_renamed.files[i] = strdup(new_file.c_str());
+  }
+
+  return dir_struct_renamed;
 }

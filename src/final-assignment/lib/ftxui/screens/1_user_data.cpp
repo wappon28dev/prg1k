@@ -17,7 +17,7 @@
 
 using namespace ftxui;
 
-ResultUserData cpp_ask_user_data()
+UserData cpp_ask_user_data()
 {
   auto screen = ScreenInteractive::TerminalOutput();
 
@@ -132,12 +132,9 @@ ResultUserData cpp_ask_user_data()
   char *dynamic_path = new char[path.length() + 1];
   std::strcpy(dynamic_path, path.c_str());
 
-  return ResultUserData{
-      .value =
-          {
-              .student_id = student_id.c_str(),
-              .mode = (Mode)selected,
-              .path = dynamic_path,
-          },
+  return UserData{
+      .student_id = student_id.c_str(),
+      .mode = (Mode)selected,
+      .path = dynamic_path,
   };
 }

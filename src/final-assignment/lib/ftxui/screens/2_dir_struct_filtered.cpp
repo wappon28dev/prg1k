@@ -18,7 +18,7 @@
 
 using namespace ftxui;
 
-DirStruct cpp_ask_dir_struct_filter(DirStruct dir_struct)
+DirStruct cpp_ask_dir_struct_filtered(DirStruct dir_struct)
 {
   auto screen = ScreenInteractive::Fullscreen();
 
@@ -129,15 +129,26 @@ DirStruct cpp_ask_dir_struct_filter(DirStruct dir_struct)
 
   screen.Loop(renderer);
 
-  DirStruct dir_struct_filtered = {.base_path = dir_struct.base_path, .file_count = 0};
+  int num_of_true = std::count(selected_arr.begin(), selected_arr.end(), true);
+  int file_count = 0;
+  DirStruct dir_struct_filtered = {.base_path = dir_struct.base_path};
 
-  for (int i = 0; i < selected_arr.size(); i++)
+  for (int i = 0; i < dir_struct.file_count; i++)
   {
     if (selected_arr[i])
     {
-      dir_struct_filtered.files[dir_struct_filtered.file_count] = strdup(files[i].c_str());
-      dir_struct_filtered.file_count++;
+      printf("!cpp count: %d: %s\n", file_count, files[i].c_str());
+      dir_struct_filtered.files[file_count] = strdup(files[i].c_str());
+      file_count++;
     }
+  }
+
+  dir_struct_filtered.file_count = file_count;
+
+  printf("!cpp file_count: %d, dir_struct_filtered.file_count: %d\n", file_count, dir_struct_filtered.file_count);
+  for (int i = 0; i < dir_struct_filtered.file_count; i++)
+  {
+    printf("!cpp: %d: %s\n", i, dir_struct_filtered.files[i]);
   }
 
   return dir_struct_filtered;

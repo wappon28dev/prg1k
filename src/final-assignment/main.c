@@ -15,33 +15,17 @@ ResultVoid _main()
 
   puts(LOGO);
 
-  ResultUserData r_ask_user_data = cpp_ask_user_data();
+  UserData user_data = cpp_ask_user_data();
 
-  if (r_ask_user_data.err_message != NULL)
-  {
-    return (ResultVoid){.err_message = r_ask_user_data.err_message};
-  }
-
-  ResultDirStruct r_ask_dir_struct = get_dir_files(r_ask_user_data.value.path);
-  // ResultDirStruct r_ask_dir_struct = get_dir_files("/Users/wataru/development/prg1k/src/14");
-
+  ResultDirStruct r_ask_dir_struct = get_dir_files(user_data.path);
   if (r_ask_dir_struct.err_message != NULL)
   {
     return (ResultVoid){.err_message = r_ask_dir_struct.err_message};
   }
 
-  DirStruct d = cpp_ask_dir_struct_filter(r_ask_dir_struct.value);
-  for (int i = 0; i < d.file_count; i++)
-  {
-    printf("%d %s\n", i, d.files[i]);
-  }
+  DirStruct dir_struct_filtered = cpp_ask_dir_struct_filtered(r_ask_dir_struct.value);
 
-  if (r_ask_dir_struct.err_message != NULL)
-  {
-    return (ResultVoid){.err_message = r_ask_dir_struct.err_message};
-  }
-
-  cpp_ask_dir_struct_renaming(r_ask_dir_struct.value, r_ask_user_data.value);
+  // DirStruct dir_struct_renamed = cpp_ask_dir_struct_renamed(dir_struct_filtered, user_data);
 
   return (ResultVoid){};
 }
