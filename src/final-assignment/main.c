@@ -15,23 +15,29 @@ ResultVoid _main()
 
   puts(LOGO);
 
-  // ResultUserData r_ask_user_data = cpp_ask_user_data();
+  ResultUserData r_ask_user_data = cpp_ask_user_data();
 
-  // if (r_ask_user_data.err_message != NULL)
-  // {
-  //   return (ResultVoid){.err_message = r_ask_user_data.err_message};
-  // }
-
-  // ResultDirStruct r_ask_dir_struct = get_dir_files(r_ask_user_data.value.path);
-
-  ResultDirStruct r_ask_dir_struct = get_dir_files("/Users/wataru/development/prg1k/build");
-
-  if (r_ask_dir_struct.err_message != NULL)
+  if (r_ask_user_data.err_message != NULL)
   {
-    return (ResultVoid){.err_message = r_ask_dir_struct.err_message};
+    return (ResultVoid){.err_message = r_ask_user_data.err_message};
   }
 
-  r_ask_dir_struct = cpp_ask_dir_struct(r_ask_dir_struct.value);
+  // ResultDirStruct r_ask_dir_struct = get_dir_files(r_ask_user_data.value.path);
+  ResultDirStruct r_ask_dir_struct = get_dir_files("/Users/wataru/development/prg1k/src/14");
+
+  // if (r_ask_dir_struct.err_message != NULL)
+  // {
+  //   return (ResultVoid){.err_message = r_ask_dir_struct.err_message};
+  // }
+
+  // r_ask_dir_struct = cpp_ask_dir_struct_filter(r_ask_dir_struct.value);
+
+  // if (r_ask_dir_struct.err_message != NULL)
+  // {
+  //   return (ResultVoid){.err_message = r_ask_dir_struct.err_message};
+  // }
+
+  cpp_ask_dir_struct_renaming(r_ask_dir_struct.value, r_ask_user_data.value);
 
   return (ResultVoid){};
 }

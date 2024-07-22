@@ -8,6 +8,7 @@ void handle_unhanded_error(const char *message)
 {
   fprintf(stderr, "\n\n--- UNHANDED ERROR OCCURRED ---\n");
   fprintf(stderr, "%s\n", message);
+  fprintf(stderr, "--------------------------------\n\n");
   exit(EXIT_FAILURE);
 }
 
