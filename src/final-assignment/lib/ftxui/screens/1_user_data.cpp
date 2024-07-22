@@ -17,10 +17,14 @@
 
 using namespace ftxui;
 
+/// @brief ユーザーに学籍番号と提出物の種類, ターゲットディレクトリを求めます.
+/// @public EXTERN C
+/// @return UserData
 UserData cpp_ask_user_data()
 {
   auto screen = ScreenInteractive::TerminalOutput();
 
+  // State //
   std::string status;
 
   std::string student_id;
@@ -36,6 +40,7 @@ UserData cpp_ask_user_data()
       "課題, チャレンジ問題 - 問題詳細の最後のほうにある問題だよ.",
   };
 
+  // Components //
   auto button = Button("   NEXT >   ", [&] { screen.ExitLoopClosure()(); });
   auto input_path =
       Input(&path, "",
@@ -97,6 +102,7 @@ UserData cpp_ask_user_data()
                     },
             });
 
+  // Interactive Components //
   auto component = Container::Vertical({
       input_student_id,
       submission_type,
@@ -104,6 +110,7 @@ UserData cpp_ask_user_data()
       button,
   });
 
+  // Renderer (Event loop) //
   auto renderer = Renderer(component, [&] {
     auto input_student_id_message =
         student_id.length() == 0
@@ -115,6 +122,7 @@ UserData cpp_ask_user_data()
                                   ? text("")
                                   : (is_valid_path ? color(Color::Green, text("✓ OK!: " + path))
                                                    : color(Color::Red, text("✗ ディレクトリが存在しません")));
+
     return vbox({vbox(text("学籍番号: "), input_student_id->Render(), input_student_id_message), separator(),
                  vbox(text("どんな提出物？:"), submission_type->Render()), separator(),
                  vbox(text("ソースコードを含んだディレクトリを指定してください (Finder から D&D しても OK):"),
@@ -129,6 +137,7 @@ UserData cpp_ask_user_data()
 
   screen.Loop(renderer);
 
+  // Data finalization //
   return UserData{
       .student_id = strdup(student_id.c_str()),
       .mode = (Mode)selected,

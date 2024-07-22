@@ -10,10 +10,14 @@
 
 typedef struct
 {
+  /// ファイル名
   std::string name;
+  /// 拡張子
   std::string ext;
 } FileName;
 
+/// @brief `const char *files[ARR_MAX]` から std のベクターへ変換します.
+/// @return std::vector<std::string>
 std::vector<std::string> dir_files_to_vector(DirStruct dir_struct)
 {
   std::vector<std::string> files;
@@ -30,7 +34,9 @@ std::vector<std::string> dir_files_to_vector(DirStruct dir_struct)
   return files;
 }
 
-FileName analyze_file_name(std::string file_name)
+/// @brief ファイル名と拡張子とを分離します.
+/// @return FileName
+FileName split_file_name_ext(std::string file_name)
 {
   std::regex re(R"((.*)\.([^.]+))");
   std::smatch match;

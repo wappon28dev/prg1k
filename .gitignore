@@ -58,3 +58,6 @@ temp/
 .vscode/tasks.json
 .vscode/launch.json
 build/
+
+src/final-assignment/bin
+src/final-assignment/sample

@@ -4,9 +4,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-void handle_unhanded_error(const char *message)
+void handle_unexpected_error(const char *message)
 {
-  fprintf(stderr, "\n\n--- UNHANDED ERROR OCCURRED ---\n");
+  fprintf(stderr, "\n\n--- UNEXPECTED ERROR OCCURRED ---\n");
   fprintf(stderr, "%s\n", message);
   fprintf(stderr, "--------------------------------\n\n");
   exit(EXIT_FAILURE);

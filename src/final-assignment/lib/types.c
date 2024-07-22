@@ -49,18 +49,21 @@ typedef struct
   const char *cause;
 } ResultVoid;
 
+/// Result<DirStruct>
 typedef struct
 {
   const char *err_message;
   const char *value;
 } ResultChar;
 
+/// Result<DirStruct>
 typedef struct
 {
   const bool value;
   const char *err_message;
 } ResultBool;
 
+/// 提出物の種類
 enum MODE
 {
   PRACTICE = 0,
@@ -68,15 +71,10 @@ enum MODE
 };
 typedef enum MODE Mode;
 
+/// ユーザーに求める情報
 typedef struct
 {
   const char *student_id;
   Mode mode;
   const char *path;
 } UserData;
-
-typedef struct
-{
-  const char *err_message;
-  UserData value;
-} ResultUserData;

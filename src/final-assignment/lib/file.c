@@ -18,6 +18,7 @@
 #define COMMAND "xdg-open"
 #endif
 
+/// @brief OS に応じて与えられたパスを開きます.
 void open_path(const char *path)
 {
   char command[1024];
@@ -25,6 +26,8 @@ void open_path(const char *path)
   system(command);
 }
 
+/// @brief 与えられたパスのファイルの内容を取得します.
+/// @return Result<char> ファイルの内容
 ResultChar get_file_content(const char *file_path)
 {
   FILE *file = fopen(file_path, "r");

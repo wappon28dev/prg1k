@@ -11,6 +11,7 @@
 
 #include "./types.c"
 
+/// @brief 提出物の種類に応じてディレクトリー名を取得します.
 const char *get_dir_name(UserData user_data)
 {
   if (user_data.mode == PRACTICE)
@@ -25,6 +26,8 @@ const char *get_dir_name(UserData user_data)
   }
 }
 
+/// @brief `/tmp` に一意なディレクトリーを作成します.
+/// @return 作成したディレクトリーのパス
 ResultChar make_dir_in_tmp()
 {
   time_t now = time(NULL);
@@ -44,7 +47,7 @@ ResultChar make_dir_in_tmp()
   return (ResultChar){.value = strdup(folderName)};
 }
 
-/// @brief ディレクトリー内のファイルの一覧を取得する
+/// @brief ディレクトリー内のファイルの一覧を取得します.
 /// @param dir_path 探索ディレクトリーのパス
 /// @return Result<DirStruct>
 ResultDirStruct get_dir_files(const char *dir_path)

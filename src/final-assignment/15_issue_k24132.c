@@ -24,11 +24,6 @@ ResultVoid _main()
   }
 
   DirStruct dir_struct_filtered = cpp_ask_dir_struct_filtered(r_ask_dir_struct.value);
-  for (int i = 0; i < dir_struct_filtered.file_count; i++)
-  {
-    printf("%s\n", dir_struct_filtered.files[i]);
-  }
-
   DirStruct dir_struct_renamed = cpp_ask_dir_struct_renamed(dir_struct_filtered, user_data);
 
   ResultChar r_make_dir_in_tmp = make_dir_in_tmp();
@@ -50,14 +45,14 @@ ResultVoid _main()
   }
 
   printf("`%s` にファイルを書き込み中...\n", zip_file_path);
-  ResultVoid r_create_zip = create_zip(r_create_zip_entry.value);
 
+  ResultVoid r_create_zip = create_zip(r_create_zip_entry.value);
   if (r_create_zip.err_message != NULL)
   {
     return (ResultVoid){.err_message = r_create_zip.err_message};
   }
 
-  printf("Zip ファイル `%s` が作成されました\n", zip_file_path);
+  printf("正常に Zip ファイル `%s` が作成されました\n", zip_file_path);
   open_path(zip_file_path);
 
   return (ResultVoid){};
@@ -69,7 +64,7 @@ int main()
   ResultVoid result = _main();
   if (result.err_message != NULL)
   {
-    handle_unhanded_error(result.err_message);
+    handle_unexpected_error(result.err_message);
   }
 
   return EXIT_SUCCESS;

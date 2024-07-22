@@ -18,23 +18,28 @@
 
 using namespace ftxui;
 
+/// @brief ユーザーにどのファイルを提出するかを求めます.
+/// @public EXTERN C
+/// @return DirStruct
 DirStruct cpp_ask_dir_struct_filtered(DirStruct dir_struct)
 {
   auto screen = ScreenInteractive::Fullscreen();
 
+  // State //
   std::string status;
   std::string file_content;
+
   auto files = dir_files_to_vector(dir_struct);
   sort(files.begin(), files.end());
-
-  auto input_lists = Container::Vertical({});
-  int focused_idx = 0;
 
   // NOTE: `std::vector<bool>` は特殊化されているため、`std::deque<bool>` を使う
   // ref:
   // https://zenn.dev/reputeless/books/standard-cpp-for-competitive-programming/viewer/vector#%E6%96%B9%E5%BC%8F-c%3A-std%3A%3Adeque%3Cbool%3E-%E3%81%A7%E4%BB%A3%E6%9B%BF%E3%81%99%E3%82%8B
   std::deque<bool> selected_arr(dir_struct.file_count, false);
+  int focused_idx = 0;
 
+  // Components //
+  auto input_lists = Container::Vertical({});
   for (int i = 0; i < dir_struct.file_count; i++)
   {
     input_lists->Add(Checkbox(files[i], &selected_arr[i]));
@@ -42,11 +47,13 @@ DirStruct cpp_ask_dir_struct_filtered(DirStruct dir_struct)
 
   auto button = Button("   NEXT >   ", [&] { screen.Exit(); });
 
+  // Interactive Components //
   auto components = Container::Vertical({
       input_lists,
       button,
   });
 
+  // Renderer (Event Loop) //
   auto renderer = Renderer(components, [&] {
     for (int i = 0; i < (input_lists->ChildCount()); i++)
     {
@@ -93,6 +100,7 @@ DirStruct cpp_ask_dir_struct_filtered(DirStruct dir_struct)
            border;
   });
 
+  // Key bindings //
   renderer |= CatchEvent([&](Event event) {
     if (event == Event::Character('q'))
     {
@@ -129,6 +137,7 @@ DirStruct cpp_ask_dir_struct_filtered(DirStruct dir_struct)
 
   screen.Loop(renderer);
 
+  // Data finalization //
   int num_of_true = std::count(selected_arr.begin(), selected_arr.end(), true);
   DirStruct dir_struct_filtered = {.base_path = dir_struct.base_path, .file_count = 0};
 
