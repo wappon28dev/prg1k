@@ -5,6 +5,7 @@
 typedef struct
 {
   const char *path;
+  const char *renamed;
   const char *content;
 } FileEntry;
 
@@ -13,9 +14,7 @@ typedef struct
 {
   /// 作成する Zip ファイルのパス
   const char *zip_file_path;
-
   FileEntry file_entries[ARR_MAX];
-  /// `file_entries`
   int file_entries_length;
 } ZipEntry;
 

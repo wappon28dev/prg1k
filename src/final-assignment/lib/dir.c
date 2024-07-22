@@ -5,8 +5,44 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <sys/stat.h>
+#include <time.h>
+#include <unistd.h>
 
 #include "./types.c"
+
+const char *get_dir_name(UserData user_data)
+{
+  if (user_data.mode == PRACTICE)
+  {
+    return strdup(user_data.student_id);
+  }
+  else
+  {
+    char *dir_name;
+    asprintf(&dir_name, "%s_issues", user_data.student_id);
+    return strdup(dir_name);
+  }
+}
+
+ResultChar make_dir_in_tmp()
+{
+  time_t now = time(NULL);
+  if (now == -1)
+  {
+    return (ResultChar){.err_message = "make_dir_in_tmp: Failed to get current time"};
+  }
+
+  char folderName[256];
+  snprintf(folderName, sizeof(folderName), "/tmp/cook-zip-c-%ld", now);
+
+  if (mkdir(folderName, 0777) == -1)
+  {
+    return (ResultChar){.err_message = "make_dir_in_tmp: Failed to create directory"};
+  }
+
+  return (ResultChar){.value = strdup(folderName)};
+}
 
 /// @brief ディレクトリー内のファイルの一覧を取得する
 /// @param dir_path 探索ディレクトリーのパス
@@ -18,7 +54,7 @@ ResultDirStruct get_dir_files(const char *dir_path)
 
   if (dir == NULL)
   {
-    return (ResultDirStruct){.err_message = "Failed to open directory"};
+    return (ResultDirStruct){.err_message = "get_dir_files: Failed to open directory"};
   }
 
   struct dirent *entry;
@@ -31,7 +67,7 @@ ResultDirStruct get_dir_files(const char *dir_path)
     if (value.files[idx] == NULL)
     {
       closedir(dir);
-      return (ResultDirStruct){.err_message = "Memory allocation failed"};
+      return (ResultDirStruct){.err_message = "get_dir_files: Memory allocation failed"};
     }
 
     if (entry->d_type == DT_DIR)
@@ -47,7 +83,7 @@ ResultDirStruct get_dir_files(const char *dir_path)
 
   if (closedir(dir) == -1)
   {
-    return (ResultDirStruct){.err_message = "Failed to close directory"};
+    return (ResultDirStruct){.err_message = "get_dir_files: Failed to close directory"};
   }
 
   return (ResultDirStruct){.value = value};

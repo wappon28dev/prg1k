@@ -17,7 +17,7 @@ ResultBool regex_match(const char *text, const char *expr)
   regex_result = regcomp(&regex, expr, 0);
   if (regex_result)
   {
-    return (ResultBool){.err_message = "Could not compile regex"};
+    return (ResultBool){.err_message = "regex_match: Could not compile regex"};
   }
 
   regex_result = regexec(&regex, text, 0, NULL, 0);

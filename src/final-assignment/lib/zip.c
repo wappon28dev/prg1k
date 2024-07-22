@@ -10,7 +10,7 @@
 
 #define MINIZ_HEADER_FILE_ONLY
 
-ResultZipEntry create_zip_entry(const char *zip_file_path, DirStruct value)
+ResultZipEntry create_zip_entry(const char *zip_file_path, DirStruct value, const char *renamed_file[ARR_MAX])
 {
   FileEntry file_entries[ARR_MAX] = {};
 
@@ -23,12 +23,12 @@ ResultZipEntry create_zip_entry(const char *zip_file_path, DirStruct value)
 
     if (r_file_content.err_message != NULL)
     {
-      fprintf(stderr, "ERROR: %s\n", r_file_content.err_message);
-      exit(EXIT_FAILURE);
+      return (ResultZipEntry){.err_message = r_file_content.err_message};
     }
 
     file_entries[i] = (FileEntry){
         .path = value.files[i],
+        .renamed = renamed_file[i],
         .content = r_file_content.value,
     };
   }
@@ -55,20 +55,20 @@ ResultVoid create_zip(ZipEntry zip_entry)
   if (!init_result)
   {
     return (ResultVoid){
-        .err_message = "Failed to initialize zip writer",
+        .err_message = "create_zip: Failed to initialize zip writer",
     };
   }
 
   for (int i = 0; i < zip_entry.file_entries_length; i++)
   {
-    const char *filename = zip_entry.file_entries[i].path;
+    const char *filename = zip_entry.file_entries[i].renamed;
     const char *fileContents = zip_entry.file_entries[i].content;
 
     bool writer_add_result =
         mz_zip_writer_add_mem(&zip_archive, filename, fileContents, strlen(fileContents), MZ_BEST_COMPRESSION);
     if (!writer_add_result)
     {
-      return (ResultVoid){.err_message = "Failed to add file to zip"};
+      return (ResultVoid){.err_message = "create_zip: Failed to add file to zip"};
     }
   }
 
@@ -77,7 +77,7 @@ ResultVoid create_zip(ZipEntry zip_entry)
   {
     mz_zip_writer_end(&zip_archive);
     return (ResultVoid){
-        .err_message = "Failed to finalize zip archive",
+        .err_message = "create_zip: Failed to finalize zip archive",
     };
   }
 
