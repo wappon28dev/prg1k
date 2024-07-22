@@ -94,7 +94,8 @@
     "stop_token": "cpp",
     "thread": "cpp",
     "file.c": "cpp",
-    "bindings.h": "c"
+    "bindings.h": "c",
+    "regex": "cpp"
   },
   "cSpell.words": [
     "byebye",

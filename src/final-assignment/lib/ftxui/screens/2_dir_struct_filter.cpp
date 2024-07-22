@@ -18,7 +18,7 @@
 
 using namespace ftxui;
 
-ResultDirStruct cpp_ask_dir_struct_filter(DirStruct dir_struct)
+DirStruct cpp_ask_dir_struct_filter(DirStruct dir_struct)
 {
   auto screen = ScreenInteractive::Fullscreen();
 
@@ -33,7 +33,7 @@ ResultDirStruct cpp_ask_dir_struct_filter(DirStruct dir_struct)
   // NOTE: `std::vector<bool>` は特殊化されているため、`std::deque<bool>` を使う
   // ref:
   // https://zenn.dev/reputeless/books/standard-cpp-for-competitive-programming/viewer/vector#%E6%96%B9%E5%BC%8F-c%3A-std%3A%3Adeque%3Cbool%3E-%E3%81%A7%E4%BB%A3%E6%9B%BF%E3%81%99%E3%82%8B
-  std::deque<bool> selected_arr(files.size(), false);
+  std::deque<bool> selected_arr(dir_struct.file_count, false);
 
   for (int i = 0; i < 10; i++)
   {
@@ -129,24 +129,16 @@ ResultDirStruct cpp_ask_dir_struct_filter(DirStruct dir_struct)
 
   screen.Loop(renderer);
 
-  std::vector<std::string> selected_files(files.size());
-  int selected_files_count = 0;
+  DirStruct dir_struct_filtered = {.base_path = dir_struct.base_path, .file_count = 0};
 
-  for (int i = 0; i < files.size(); i++)
+  for (int i = 0; i < selected_arr.size(); i++)
   {
     if (selected_arr[i])
     {
-      selected_files[selected_files_count] = files[i].c_str();
-      selected_files_count++;
+      dir_struct_filtered.files[dir_struct_filtered.file_count] = strdup(files[i].c_str());
+      dir_struct_filtered.file_count++;
     }
   }
 
-  return ResultDirStruct{
-      .value =
-          {
-              .base_path = dir_struct.base_path,
-              .files = (const char *)selected_files.data(),
-              .file_count = selected_files_count,
-          },
-  };
+  return dir_struct_filtered;
 }

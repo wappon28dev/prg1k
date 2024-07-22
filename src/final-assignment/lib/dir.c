@@ -34,6 +34,11 @@ ResultDirStruct get_dir_files(const char *dir_path)
       return (ResultDirStruct){.err_message = "Memory allocation failed"};
     }
 
+    if (entry->d_type == DT_DIR)
+    {
+      continue;
+    }
+
     value.files[idx] = strdup(entry->d_name);
     idx++;
   }

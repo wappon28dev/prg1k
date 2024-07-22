@@ -22,20 +22,24 @@ ResultVoid _main()
     return (ResultVoid){.err_message = r_ask_user_data.err_message};
   }
 
-  // ResultDirStruct r_ask_dir_struct = get_dir_files(r_ask_user_data.value.path);
-  ResultDirStruct r_ask_dir_struct = get_dir_files("/Users/wataru/development/prg1k/src/14");
+  ResultDirStruct r_ask_dir_struct = get_dir_files(r_ask_user_data.value.path);
+  // ResultDirStruct r_ask_dir_struct = get_dir_files("/Users/wataru/development/prg1k/src/14");
 
-  // if (r_ask_dir_struct.err_message != NULL)
-  // {
-  //   return (ResultVoid){.err_message = r_ask_dir_struct.err_message};
-  // }
+  if (r_ask_dir_struct.err_message != NULL)
+  {
+    return (ResultVoid){.err_message = r_ask_dir_struct.err_message};
+  }
 
-  // r_ask_dir_struct = cpp_ask_dir_struct_filter(r_ask_dir_struct.value);
+  DirStruct d = cpp_ask_dir_struct_filter(r_ask_dir_struct.value);
+  for (int i = 0; i < d.file_count; i++)
+  {
+    printf("%d %s\n", i, d.files[i]);
+  }
 
-  // if (r_ask_dir_struct.err_message != NULL)
-  // {
-  //   return (ResultVoid){.err_message = r_ask_dir_struct.err_message};
-  // }
+  if (r_ask_dir_struct.err_message != NULL)
+  {
+    return (ResultVoid){.err_message = r_ask_dir_struct.err_message};
+  }
 
   cpp_ask_dir_struct_renaming(r_ask_dir_struct.value, r_ask_user_data.value);
 
