@@ -24,8 +24,12 @@ ResultVoid _main()
   }
 
   DirStruct dir_struct_filtered = cpp_ask_dir_struct_filtered(r_ask_dir_struct.value);
+  for (int i = 0; i < dir_struct_filtered.file_count; i++)
+  {
+    printf("%s\n", dir_struct_filtered.files[i]);
+  }
 
-  // DirStruct dir_struct_renamed = cpp_ask_dir_struct_renamed(dir_struct_filtered, user_data);
+  DirStruct dir_struct_renamed = cpp_ask_dir_struct_renamed(dir_struct_filtered, user_data);
 
   return (ResultVoid){};
 }

@@ -62,11 +62,12 @@ typedef struct
   const char *err_message;
 } ResultBool;
 
-typedef enum
+enum MODE
 {
   PRACTICE = 0,
   ISSUES = 1,
-} Mode;
+};
+typedef enum MODE Mode;
 
 typedef struct
 {

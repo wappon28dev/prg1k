@@ -35,7 +35,7 @@ DirStruct cpp_ask_dir_struct_filtered(DirStruct dir_struct)
   // https://zenn.dev/reputeless/books/standard-cpp-for-competitive-programming/viewer/vector#%E6%96%B9%E5%BC%8F-c%3A-std%3A%3Adeque%3Cbool%3E-%E3%81%A7%E4%BB%A3%E6%9B%BF%E3%81%99%E3%82%8B
   std::deque<bool> selected_arr(dir_struct.file_count, false);
 
-  for (int i = 0; i < 10; i++)
+  for (int i = 0; i < dir_struct.file_count; i++)
   {
     input_lists->Add(Checkbox(files[i], &selected_arr[i]));
   }
@@ -130,26 +130,15 @@ DirStruct cpp_ask_dir_struct_filtered(DirStruct dir_struct)
   screen.Loop(renderer);
 
   int num_of_true = std::count(selected_arr.begin(), selected_arr.end(), true);
-  int file_count = 0;
-  DirStruct dir_struct_filtered = {.base_path = dir_struct.base_path};
+  DirStruct dir_struct_filtered = {.base_path = dir_struct.base_path, .file_count = 0};
 
   for (int i = 0; i < dir_struct.file_count; i++)
   {
     if (selected_arr[i])
     {
-      printf("!cpp count: %d: %s\n", file_count, files[i].c_str());
-      dir_struct_filtered.files[file_count] = strdup(files[i].c_str());
-      file_count++;
+      dir_struct_filtered.files[dir_struct_filtered.file_count] = strdup(files[i].c_str());
+      dir_struct_filtered.file_count++;
     }
   }
-
-  dir_struct_filtered.file_count = file_count;
-
-  printf("!cpp file_count: %d, dir_struct_filtered.file_count: %d\n", file_count, dir_struct_filtered.file_count);
-  for (int i = 0; i < dir_struct_filtered.file_count; i++)
-  {
-    printf("!cpp: %d: %s\n", i, dir_struct_filtered.files[i]);
-  }
-
   return dir_struct_filtered;
 }

@@ -41,21 +41,34 @@ Element get_hightailed_file_name(std::string before, std::string prefix, std::st
 DirStruct cpp_ask_dir_struct_renamed(DirStruct dir_struct, UserData user_data)
 {
   auto screen = ScreenInteractive::Fullscreen();
+  std::string status = "";
+
   auto files = dir_files_to_vector(dir_struct);
   sort(files.begin(), files.end());
 
-  char *c_prefix = get_prefix(dir_struct.base_path, dir_struct.files, dir_struct.file_count);
-  char *c_suffix =
-      get_suffix(dir_struct.files, dir_struct.file_count, std::to_string(user_data.mode).c_str(), user_data.student_id);
+  char *c_prefix = get_prefix(dir_struct);
+  char *c_suffix = get_suffix(dir_struct, user_data);
+  std::string prefix = c_prefix == NULL ? "" : c_prefix;
+  std::string suffix = c_suffix == NULL ? "" : c_suffix;
 
-  std::string status;
-  std::string prefix = c_prefix;
-  std::string suffix = c_suffix;
+  if (c_prefix != NULL)
+  {
+    status = "🔧 Prefix: " + prefix;
+  }
 
-  auto input_prefix = Input(&prefix, InputOption{.placeholder = "Prefix"});
-  auto input_suffix = Input(&suffix, InputOption{.placeholder = "Suffix"});
+  if (c_suffix != NULL)
+  {
+    status += "🔧 Suffix: " + suffix;
+  }
 
-  auto components = Container::Vertical({input_prefix, input_suffix});
+  auto button = Button("   CREATE >   ", [&] { screen.ExitLoopClosure()(); });
+  auto input_suffix = Input(
+      &suffix, InputOption{.placeholder = "Suffix", .multiline = false, .on_enter = [&] { button->TakeFocus(); }});
+  auto input_prefix =
+      Input(&prefix,
+            InputOption{.placeholder = "Prefix", .multiline = false, .on_enter = [&] { input_suffix->TakeFocus(); }});
+
+  auto components = Container::Vertical({input_prefix, input_suffix, button});
 
   auto renderer = Renderer(components, [&] {
     std::vector<Element> idx_arr;
@@ -69,22 +82,35 @@ DirStruct cpp_ask_dir_struct_renamed(DirStruct dir_struct, UserData user_data)
       files_before_arr.push_back(text(file));
       files_after_arr.push_back(get_hightailed_file_name(file, prefix, suffix));
     }
+    return vbox({
+        vbox({
+            hbox({
+                text("Prefix: "),
+                input_prefix->Render() | size(WIDTH, EQUAL, 20),
+            }),
+            hbox({
+                text("Suffix: "),
+                input_suffix->Render() | size(WIDTH, EQUAL, 20),
+            }),
+        }),
+        separator(),
+        hbox({
+            vbox(idx_arr),
+            separator(),
+            vbox(files_before_arr) | size(WIDTH, GREATER_THAN, 50),
+            separator(),
+            text("→"),
+            separator(),
+            vbox(idx_arr),
+            separator(),
+            vbox(files_after_arr) | size(WIDTH, GREATER_THAN, 50),
+        }) | flex,
+        hbox({
+            color(Color::GrayDark, text(status)) | border | flex,
+            button->Render(),
+        }),
 
-    return vbox({hbox({
-                     input_prefix->Render() | size(WIDTH, EQUAL, 20),
-                     text("___"),
-                     input_suffix->Render() | size(WIDTH, EQUAL, 20),
-                 }),
-                 separator(),
-                 hbox({
-                     vbox(idx_arr),
-                     separator(),
-                     vbox(files_before_arr) | size(WIDTH, EQUAL, 50),
-                     separator(),
-                     text("→"),
-                     separator(),
-                     vbox(files_after_arr) | size(WIDTH, EQUAL, 50),
-                 })});
+    });
   });
 
   screen.Loop(renderer);

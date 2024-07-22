@@ -4,10 +4,11 @@
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "./types.c"
 
-ResultBool regex_match(const char *expr, const char *text)
+ResultBool regex_match(const char *text, const char *expr)
 {
   regex_t regex;
   int regex_result;
@@ -52,7 +53,7 @@ bool all_match(const char **filePaths, int length, const char *pattern)
 {
   for (int i = 0; i < length; i++)
   {
-    ResultBool result = regex_match(pattern, filePaths[i]);
+    ResultBool result = regex_match(filePaths[i], pattern);
     if (!result.value)
     {
       return false;
@@ -61,39 +62,74 @@ bool all_match(const char **filePaths, int length, const char *pattern)
   return true;
 }
 
-char *get_prefix(const char *src, const char **filePaths, int length)
+char *get_prefix(DirStruct dir_struct)
 {
-  char *last_segment = get_last_segment(src);
-  if (all_match(filePaths, length, "^\\d{2}_\\d{2}_"))
+  static char prefix[10];
+
+  int all_files_match = true;
+  for (int i = 0; i < dir_struct.file_count; i++)
+  {
+    if (!regex_match(dir_struct.files[i], "^\\d{2}_\\d{2}_").value)
+    {
+      all_files_match = false;
+      break;
+    }
+  }
+
+  if (all_files_match)
   {
     return NULL;
   }
-  ResultBool result = regex_match("^\\d{2}$", last_segment);
-  if (result.value)
+
+  const char *last_file = dir_struct.files[dir_struct.file_count - 1];
+  const char *last_segment = strrchr(dir_struct.base_path, '/');
+  if (last_segment)
   {
-    char *prefix = (char *)malloc(strlen(last_segment) + 2);
-    snprintf(prefix, strlen(last_segment) + 2, "%s_", last_segment);
+    last_segment++;
+  }
+  else
+  {
+    last_segment = last_file;
+  }
+
+  if (regex_match(last_segment, "^\\d{2}$").value)
+  {
+    snprintf(prefix, sizeof(prefix), "%s_", last_segment);
     return prefix;
   }
+
   return NULL;
 }
 
-char *get_suffix(const char **filePaths, int length, const char *mode, const char *name)
+char *get_suffix(DirStruct dir_struct, UserData user_data)
 {
-  if (strcmp(mode, "issues") != 0)
+  static char suffix[10];
+
+  if (user_data.mode != ISSUES)
   {
     return NULL;
   }
-  if (all_match(filePaths, length, "_k\\d{5}.c$"))
+
+  int all_files_match = 1;
+  for (int i = 0; i < dir_struct.file_count; i++)
+  {
+    if (!regex_match(dir_struct.files[i], "_k\\d{5}\\.c$").value)
+    {
+      all_files_match = 0;
+      break;
+    }
+  }
+
+  if (all_files_match)
   {
     return NULL;
   }
-  char *suffix = (char *)malloc(strlen(name) + 2);
-  snprintf(suffix, strlen(name) + 2, "_%s", name);
+
+  snprintf(suffix, sizeof(suffix), "_%s", user_data.student_id);
   return suffix;
 }
 
 ResultBool validate_student_id(const char *student_id)
 {
-  return regex_match("^k2[0-9][0-9][0-9][0-9]$", student_id);
+  return regex_match(student_id, "^k2[0-9][0-9][0-9][0-9]$");
 }

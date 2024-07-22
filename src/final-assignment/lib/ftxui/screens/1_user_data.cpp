@@ -122,19 +122,16 @@ UserData cpp_ask_user_data()
                  separator(),
                  hbox({
                      color(Color::GrayDark, text(status)) | flex,
-                     hbox(text("   "), button->Render()),
+                     hbox(button->Render()),
                  })}) |
            border;
   });
 
   screen.Loop(renderer);
 
-  char *dynamic_path = new char[path.length() + 1];
-  std::strcpy(dynamic_path, path.c_str());
-
   return UserData{
-      .student_id = student_id.c_str(),
+      .student_id = strdup(student_id.c_str()),
       .mode = (Mode)selected,
-      .path = dynamic_path,
+      .path = strdup(path.c_str()),
   };
 }

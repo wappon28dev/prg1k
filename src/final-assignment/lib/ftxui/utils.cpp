@@ -17,7 +17,7 @@ typedef struct
 std::vector<std::string> dir_files_to_vector(DirStruct dir_struct)
 {
   std::vector<std::string> files;
-  for (int i = 0; i < 100; i++)
+  for (int i = 0; i < dir_struct.file_count; i++)
   {
     if (dir_struct.files[i] == NULL)
     {
