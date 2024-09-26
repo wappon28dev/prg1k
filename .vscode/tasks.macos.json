@@ -10,7 +10,8 @@
         "-g",
         "${file}",
         "-o",
-        "${workspaceFolder}/out/a"
+        "${workspaceFolder}/out/a",
+        "-std=c11"
       ],
       "options": {
         "cwd": "${fileDirname}"

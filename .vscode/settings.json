@@ -95,7 +95,8 @@
     "thread": "cpp",
     "file.c": "cpp",
     "bindings.h": "c",
-    "regex": "cpp"
+    "regex": "cpp",
+    "stdlib.h": "c"
   },
   "cSpell.words": [
     "byebye",
