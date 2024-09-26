@@ -5,7 +5,6 @@
 
 int main(int argc, char *argv[])
 {
-
   for (int n = 1; n <= NUM_OF_LOOP; n++)
   {
     printf("hoge");

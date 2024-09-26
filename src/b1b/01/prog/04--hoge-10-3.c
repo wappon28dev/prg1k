@@ -2,7 +2,6 @@
 
 int main(int argc, char *argv[])
 {
-
   for (int i = 0; i < 10; i++)
   {
     printf("hoge");
@@ -12,6 +11,8 @@ int main(int argc, char *argv[])
       putchar('\n');
     }
   }
+
+  putchar('\n');
 
   return 0;
 }

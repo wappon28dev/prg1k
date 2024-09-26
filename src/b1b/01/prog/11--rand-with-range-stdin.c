@@ -18,6 +18,12 @@ int main(int argc, char *argv[])
   printf("min max? ");
   scanf("%d %d", &min, &max);
 
+  if (min > max)
+  {
+    printf("ERROR: min は max 以下である必要があります. (EXPECTED: %d <= %d).\n", min, max);
+    return 1;
+  }
+
   srand((unsigned int)time(NULL));
   printf("%d\n", rand_with_range(min, max));
 

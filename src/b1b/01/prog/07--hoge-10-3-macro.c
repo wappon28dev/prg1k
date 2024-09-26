@@ -4,7 +4,6 @@
 
 int main(int argc, char *argv[])
 {
-
   for (int i = 0; i < NUM_OF_LOOP; i++)
   {
     printf("hoge");
@@ -14,6 +13,8 @@ int main(int argc, char *argv[])
       putchar('\n');
     }
   }
+
+  putchar('\n');
 
   return 0;
 }

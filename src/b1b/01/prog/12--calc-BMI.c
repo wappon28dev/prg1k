@@ -10,7 +10,7 @@ typedef enum
   EXTREME_OBESITY
 } BMIStatus;
 
-BMIStatus calc_bmi(double height, double weight)
+BMIStatus calc_bmi_status(double height, double weight)
 {
   double bmi = weight / (height * height);
 
@@ -32,9 +32,9 @@ BMIStatus calc_bmi(double height, double weight)
   }
 }
 
-const char *bmi_status_to_str(BMIStatus result)
+const char *bmi_status_to_str(BMIStatus status)
 {
-  switch (result)
+  switch (status)
   {
   case UNDERWEIGHT:
     return "やせ";
@@ -58,9 +58,9 @@ int main(int argc, char *argv[])
   printf("weight (kg)? ");
   scanf("%d", &weight);
 
-  auto result = calc_bmi(height / 100.0, weight);
+  BMIStatus status = calc_bmi_status(height / 100.0, weight);
 
-  puts(bmi_status_to_str(result));
+  puts(bmi_status_to_str(status));
 
   return 0;
 }
