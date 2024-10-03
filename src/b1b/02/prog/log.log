@@ -1,0 +1,133 @@
+### 準備 ###
+➜  prog git:(main) ✗ gcc compile-main.c
+Undefined symbols for architecture arm64:
+  "_sub", referenced from:
+      _main in compile-main-ea4b0c.o
+ld: symbol(s) not found for architecture arm64
+clang: error: linker command failed with exit code 1 (use -v to see invocation)
+➜  prog git:(main) ✗ gcc compile-func.c
+Undefined symbols for architecture arm64:
+  "_b", referenced from:
+      _sub in compile-func-f3bd30.o
+  "_main", referenced from:
+      <initial-undefines>
+ld: symbol(s) not found for architecture arm64
+clang: error: linker command failed with exit code 1 (use -v to see invocation)
+➜  prog git:(main) ✗ gcc ./compile-main.c ./compile-func.c
+➜  prog git:(main) ✗ l a.out
+Permissions Size User   Date Modified Name
+.rwxr-xr-x   33k wataru  3 10 09:58   a.out
+➜  prog git:(main) ✗ ./a.out
+50
+
+
+
+### 練習 ###
+➜  prog git:(main) ✗ gcc ex-main.c ex1-func.c
+➜  prog git:(main) ✗ ./a.out
+ex1-func.c には このコメントが書いてあります．
+
+ex1-func.c には このコメントが書いてあります．
+
+ex1-func.c には このコメントが書いてあります．
+
+
+
+### 練習 (続き) ###
+➜  prog git:(main) ✗ gcc ex-main.c ex2-func.c
+➜  prog git:(main) ✗ ./a.out
+こんにちは! お元気ですか?
+ex2-func.c では 違うコメントを定義しました．
+こんにちは! お元気ですか?
+ex2-func.c では 違うコメントを定義しました．
+こんにちは! お元気ですか?
+ex2-func.c では 違うコメントを定義しました．
+
+
+### A-1 ###
+➜  prog git:(main) ✗ gcc -c ./enshuFig-main.c
+
+
+
+### A-2 ###
+➜  prog git:(main) ✗ gcc ./enshuFig-main.o ./enshuFig-sub1.c
+➜  prog git:(main) ✗ ./a.out
+Size of figure? 5
+*****
+*****
+*****
+*****
+*****
+➜  prog git:(main) ✗ l
+Permissions Size User   Date Modified Name
+.rwxr-xr-x   34k wataru  3 10 09:29   a.out
+.rw-r--r--   189 wataru  3 10 09:25   enshuFig-main.c
+.rw-r--r--   896 wataru  3 10 09:29   enshuFig-main.o
+.rw-r--r--   179 wataru  3 10 09:27   enshuFig-sub1.c
+
+
+
+### A-3–6 ###
+➜  prog git:(main) ✗ l
+Permissions Size User   Date Modified Name
+.rwxr-xr-x   34k wataru  3 10 09:51   a.out
+.rw-r--r--   189 wataru  3 10 09:25   enshuFig-main.c
+.rw-r--r--   896 wataru  3 10 09:29   enshuFig-main.o
+.rw-r--r--   180 wataru  3 10 09:44   enshuFig-sub1.c
+.rw-r--r--   181 wataru  3 10 09:44   enshuFig-sub2.c
+.rw-r--r--   197 wataru  3 10 09:44   enshuFig-sub3.c
+.rw-r--r--   206 wataru  3 10 09:49   enshuFig-sub4.c
+.rw-r--r--   207 wataru  3 10 09:51   enshuFig-sub5.c
+.rw-r--r--   789 wataru  3 10 09:52   log.log
+➜  prog git:(main) ✗ for i in {2..5}; do gcc ./enshuFig-main.o ./enshuFig-sub$i.c; ./a.out; done; 
+Size of figure? 5
+*
+**
+***
+****
+*****
+Size of figure? 5
+*
+ *
+  *
+   *
+    *
+Size of figure? 5
+    *
+   **
+  ***
+ ****
+*****
+Size of figure? 5
+    *
+   * 
+  *  
+ *   
+*    
+
+
+
+### Q-2 ###
+➜  prog git:(main) ✗ mv Makefile Makefile0
+➜  prog git:(main) ✗ mv Makefile Makefile-BAK
+
+### Q-3 ###
+➜  prog git:(main) ✗ make clean
+/bin/rm -f compile-main.o compile-func.o *~
+
+### Q-4 ###
+➜  prog git:(main) ✗ make
+gcc -O -Wall -g -c compile-main.c
+gcc -O -Wall -g -c compile-func.c
+gcc  compile-main.o compile-func.o -lm
+
+### A-7 ###
+➜  prog git:(main) ✗ make
+gcc  enshuFig-main.c enshuFig-sub1.c -lm
+➜  prog git:(main) ✗ ./a.out
+Size of figure? 5
+*****
+*****
+*****
+*****
+*****

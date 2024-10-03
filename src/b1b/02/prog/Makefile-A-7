@@ -1,0 +1,26 @@
+# 各種変数の設定
+CC		= gcc
+RM		= /bin/rm -f
+DEBUG	= -g
+LIBS	= -lm
+CFLAGS	= -O -Wall ${DEBUG}
+LDFLAGS	= 
+
+
+# オブジェクトファイル名 (のリスト)
+# 実行ファイル名 (のリスト)
+OBJS	= enshuFig-main.c enshuFig-sub1.c
+PROGS	= program
+
+# make all のトップレベル
+all : ${PROGS}
+
+program : ${OBJS}
+	${CC} ${LDFLAGS} ${OBJS} ${LIBS}
+.c.o :
+	${CC} ${CFLAGS} -c $<
+
+# 「make clean」と入力すると「.o」や「~ で終わるファイル」が消去される
+.PHONY : clean
+clean:
+	$(RM) $(OBJS) *~

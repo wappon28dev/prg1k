@@ -1,0 +1,6 @@
+program : compile-main.o compile-func.o
+	gcc compile-main.o compile-func.o
+compile-main.o : compile-main.c
+	gcc -c compile-main.c
+compile-func.o : compile-func.c
+	gcc -c compile-func.c
