@@ -58,3 +58,6 @@ temp/
 .vscode/tasks.json
 .vscode/launch.json
 build/
+
+cook-zip.sh
+_work/
