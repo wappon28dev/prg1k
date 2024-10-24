@@ -23,10 +23,10 @@ int main(int argc, char *argv[])
   int *p_arr = arr;
 
   dump_arr(p_arr, LENGTH);
-  puts("---");
 
   set_map_10x(p_arr, LENGTH);
 
+  puts("--- Mapped 10x ---");
   dump_arr(p_arr, LENGTH);
 
   return 0;

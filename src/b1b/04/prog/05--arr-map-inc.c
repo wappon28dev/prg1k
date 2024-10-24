@@ -15,7 +15,6 @@ int main(int argc, char *argv[])
   int *p_arr = arr;
 
   dump_arr(p_arr, LENGTH);
-  puts("---");
 
   for (int i = 0; i < LENGTH; i++)
   {
@@ -23,6 +22,7 @@ int main(int argc, char *argv[])
     // arr[i] += 1;
   }
 
+  puts("--- Mapped increment ---");
   dump_arr(p_arr, LENGTH);
 
   return 0;

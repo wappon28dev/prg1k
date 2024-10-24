@@ -42,10 +42,10 @@ int main(int argc, char *argv[])
   int arr_len = sizeof(arr) / sizeof(arr[0]);
 
   dump_arr(arr, arr_len);
-  puts("---");
 
   bubble_sort(arr, arr_len);
 
+  puts("--- Sorted ---");
   dump_arr(arr, arr_len);
 
   return 0;
