@@ -16,7 +16,7 @@ void continue_or_handle_file_error(FILE *fp, const char *file_name)
 
 int main(int argc, char *argv[])
 {
-  const char *file_name = "src/b1b/06/prog/out/number.txt";
+  const char *file_name = "out/number.txt";
   FILE *fp = fopen(file_name, "a+");
 
   continue_or_handle_file_error(fp, file_name);

@@ -8,7 +8,7 @@
       "program": "${workspaceFolder}/out/a",
       "stopAtEntry": false,
       "preLaunchTask": "build",
-      "cwd": "${workspaceFolder}",
+      "cwd": "${fileDirname}",
       "environment": [],
       "MIMode": "gdb",
       "miDebuggerPath": "/usr/bin/gdb",

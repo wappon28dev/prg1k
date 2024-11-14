@@ -33,7 +33,7 @@ bool is_prime(int n)
 
 int main(int argc, char *argv[])
 {
-  const char *file_name = "src/b1b/06/prog/out/prime.txt";
+  const char *file_name = "out/prime.txt";
 
   FILE *fp = fopen(file_name, "w");
 

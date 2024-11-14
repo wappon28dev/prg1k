@@ -17,7 +17,7 @@ void continue_or_handle_file_error(FILE *fp, const char *file_name)
 
 int main(int argc, char *argv[])
 {
-  const char *file_name = "src/b1b/06/prog/assets/meibo.txt";
+  const char *file_name = "assets/meibo.txt";
   FILE *fp = fopen(file_name, "a+");
 
   continue_or_handle_file_error(fp, file_name);

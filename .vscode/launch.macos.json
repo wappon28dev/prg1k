@@ -9,7 +9,7 @@
       "args": ["<", "${fileDirname}/${fileBasenameNoExtension}.stdin"],
       "stopAtEntry": false,
       "preLaunchTask": "build",
-      "cwd": "${workspaceFolder}",
+      "cwd": "${fileDirname}",
       "environment": [],
       "externalConsole": true,
       "MIMode": "lldb",
