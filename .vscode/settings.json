@@ -96,19 +96,9 @@
     "file.c": "cpp",
     "bindings.h": "c",
     "regex": "cpp",
-    "stdlib.h": "c"
+    "stdlib.h": "c",
+    "string.h": "c"
   },
-  "cSpell.words": [
-    "byebye",
-    "ftxui",
-    "Fullscreen",
-    "hbox",
-    "MINIZ",
-    "outro",
-    "stdev",
-    "Treatmentable",
-    "vscroll"
-  ],
   "cmake.sourceDirectory": "${workspaceFolder}/src/final-assignment",
   "cmake.ignoreCMakeListsMissing": true
 }
