@@ -1,6 +1,5 @@
 {
   "debug.console.collapseIdenticalLines": false,
-  "workbench.panel.defaultLocation": "left",
   "files.associations": {
     "*.md": "markdown",
     "stdio.h": "c",

@@ -12,7 +12,7 @@ typedef struct Student
 int main(int argc, char *argv[])
 {
   Student students[3] = {
-      {"hyodo", 18, "K24123", 1},
+      {"Hyodo", 18, "K24123", 1},
       {"Akihisa", 19, "K24137", 1},
       {"nasubi", 19, "K24083", 1},
   };

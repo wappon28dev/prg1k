@@ -1,4 +1,6 @@
 #include <errno.h>
+#include <float.h>
+#include <math.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -28,16 +30,6 @@ void continue_or_handle_file_error(const FILE *fp, const char *file_name)
   }
 }
 
-/// Helpers ///
-
-char *allocate_and_copy_string(const char *src)
-{
-  char *dest = malloc(strlen(src) + 1);
-  continue_or_handle_malloc_error(dest);
-  strcpy(dest, src);
-  return dest;
-}
-
 /// Feature ///
 
 typedef struct Feature
@@ -46,21 +38,19 @@ typedef struct Feature
   double width;
 } Feature;
 
-Feature calc_feature_average(Feature *features, const int features_len)
+double calc_feature_distance(Feature feature1, Feature feature2)
 {
-  double sum_length = 0;
-  double sum_width = 0;
+  return sqrt(pow(feature1.length - feature2.length, 2) + pow(feature1.width - feature2.width, 2));
+}
 
-  for (int i = 0; i < features_len; i++)
-  {
-    sum_length += features[i].length;
-    sum_width += features[i].width;
-  }
+/// Helpers ///
 
-  return (Feature){
-      .length = sum_length / features_len,
-      .width = sum_width / features_len,
-  };
+char *allocate_and_copy_string(const char *src)
+{
+  char *dest = malloc(strlen(src) + 1);
+  continue_or_handle_malloc_error(dest);
+  strcpy(dest, src);
+  return dest;
 }
 
 /// Iris ///
@@ -101,28 +91,9 @@ void dump_iris(Iris iris, const char *name)
   }
 }
 
-Iris calc_iris_average(const Iris *iris_list, int iris_list_len, const char *class)
+double calc_iris_distance(const Iris iris1, const Iris iris2)
 {
-  Feature *sepal_features = malloc(sizeof(Feature) * iris_list_len);
-  Feature *petal_features = malloc(sizeof(Feature) * iris_list_len);
-
-  for (int i = 0; i < iris_list_len; i++)
-  {
-    sepal_features[i] = iris_list[i].sepal;
-    petal_features[i] = iris_list[i].petal;
-  }
-
-  Iris reduced_iris = {
-      .sepal = calc_feature_average(sepal_features, iris_list_len),
-      .petal = calc_feature_average(petal_features, iris_list_len),
-  };
-
-  strcpy(reduced_iris.class, class);
-
-  free(sepal_features);
-  free(petal_features);
-
-  return reduced_iris;
+  return calc_feature_distance(iris1.sepal, iris2.sepal) + calc_feature_distance(iris1.petal, iris2.petal);
 }
 
 /// @param unique_classes `unique_classes[idx]` は free してね！！！
@@ -167,6 +138,24 @@ int set_iris_filtered_by_class(const Iris *iris_list, const int iris_list_len, c
   return idx;
 }
 
+void set_inferred_iris_class(const Iris iris, const Iris *iris_list, const int iris_list_len, char *inferred_class,
+                             double *calculated_distance)
+{
+  double min_distance = DBL_MAX;
+  for (int i = 0; i < iris_list_len; i++)
+  {
+    double distance = calc_iris_distance(iris, iris_list[i]);
+    if (distance < min_distance)
+    {
+      min_distance = distance;
+      strcpy(inferred_class, iris_list[i].class);
+    }
+  }
+
+  *calculated_distance = min_distance;
+  return;
+}
+
 /// File ///
 
 int load_iris_from_file(const char *file_name, Iris *iris_list)
@@ -195,30 +184,25 @@ int main(int argc, const char *argv[])
   Iris iris_list[LINES_MAX];
   int iris_list_len = load_iris_from_file(file_name, iris_list);
 
-  char **unique_classes = malloc(sizeof(char *) * LINES_MAX);
-  continue_or_handle_malloc_error(unique_classes);
-  int unique_classes_len = set_iris_classes_unique(iris_list, iris_list_len, unique_classes);
+  Iris samples[] = {
+      {.sepal = {5.7, 4.0}, .petal = {1.2, 0.2}},
+      {.sepal = {5.9, 2.9}, .petal = {4.2, 1.5}},
+      {.sepal = {5.6, 2.8}, .petal = {4.8, 2.0}},
+  };
+  int samples_len = sizeof(samples) / sizeof(Iris);
 
-  for (int i = 0; i < unique_classes_len; i++)
+  for (int i = 0; i < samples_len; i++)
   {
-    Iris iris_list_filtered[LINES_MAX];
-    int iris_list_filtered_len =
-        set_iris_filtered_by_class(iris_list, iris_list_len, unique_classes[i], iris_list_filtered);
-
-    Iris iris_avg = calc_iris_average(iris_list_filtered, iris_list_filtered_len, unique_classes[i]);
+    char inferred_class[CLASS_LEN_MAX];
+    double calculated_distance;
+    set_inferred_iris_class(samples[i], iris_list, iris_list_len, inferred_class, &calculated_distance);
 
     char *name;
-    asprintf(&name, "%s (avg)", unique_classes[i]);
-    dump_iris(iris_avg, name);
-    free(name);
+    asprintf(&name, "Sample #%d", i + 1);
+    dump_iris(samples[i], name);
+    printf("  Inferred Class: %s\n", inferred_class);
+    printf("     -> Distance: %lf\n", calculated_distance);
   }
-
-  /// dispose ///
-  for (int i = 0; i < unique_classes_len; i++)
-  {
-    free(unique_classes[i]);
-  }
-  free(unique_classes);
 
   return 0;
 }

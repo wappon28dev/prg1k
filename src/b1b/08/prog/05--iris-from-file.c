@@ -27,13 +27,42 @@ void continue_or_handle_file_error(const FILE *fp, const char *file_name)
   }
 }
 
-/// Iris ///
+/// Helpers ///
+
+char *allocate_and_copy_string(const char *src)
+{
+  char *dest = malloc(strlen(src) + 1);
+  continue_or_handle_malloc_error(dest);
+  strcpy(dest, src);
+  return dest;
+}
+
+/// Feature ///
 
 typedef struct Feature
 {
-  float length;
-  float width;
+  double length;
+  double width;
 } Feature;
+
+Feature calc_feature_average(Feature *features, const int features_len)
+{
+  double sum_length = 0;
+  double sum_width = 0;
+
+  for (int i = 0; i < features_len; i++)
+  {
+    sum_length += features[i].length;
+    sum_width += features[i].width;
+  }
+
+  return (Feature){
+      .length = sum_length / features_len,
+      .width = sum_width / features_len,
+  };
+}
+
+/// Iris ///
 
 typedef struct Iris
 {
@@ -63,26 +92,9 @@ Iris parse_str(const char *str)
 void dump_iris(Iris iris, const char *name)
 {
   printf("%s:\n", name);
-  printf("  Sepal: (%f, %f)\n", iris.sepal.length, iris.sepal.width);
-  printf("  Petal: (%f, %f)\n", iris.petal.length, iris.petal.width);
+  printf("  Sepal: (%lf, %lf)\n", iris.sepal.length, iris.sepal.width);
+  printf("  Petal: (%lf, %lf)\n", iris.petal.length, iris.petal.width);
   printf("  Class: %s\n", iris.class);
-}
-
-Feature __calc_average(Feature *features, const int features_len)
-{
-  float sum_length = 0;
-  float sum_width = 0;
-
-  for (int i = 0; i < features_len; i++)
-  {
-    sum_length += features[i].length;
-    sum_width += features[i].width;
-  }
-
-  return (Feature){
-      .length = sum_length / features_len,
-      .width = sum_width / features_len,
-  };
 }
 
 Iris calc_iris_average(const Iris *iris_list, int iris_list_len)
@@ -97,8 +109,8 @@ Iris calc_iris_average(const Iris *iris_list, int iris_list_len)
   }
 
   Iris reduced_iris = {
-      .sepal = __calc_average(sepal_features, iris_list_len),
-      .petal = __calc_average(petal_features, iris_list_len),
+      .sepal = calc_feature_average(sepal_features, iris_list_len),
+      .petal = calc_feature_average(petal_features, iris_list_len),
   };
 
   free(sepal_features);
@@ -107,66 +119,40 @@ Iris calc_iris_average(const Iris *iris_list, int iris_list_len)
   return reduced_iris;
 }
 
-void set_iris_filtered_by_class(const Iris *iris_list, const int iris_list_len, const char *class,
-                                Iris *filtered_iris_list, int *filtered_iris_list_len)
-{
-  int idx = 0;
-  for (int i = 0; i < iris_list_len; i++)
-  {
-    printf("iris_list[%d].class: %s\n", i, iris_list[i].class);
-    if (strcmp(iris_list[i].class, class) == 0)
-    {
-      filtered_iris_list[idx] = iris_list[i];
-      idx++;
-    }
-  }
-
-  *filtered_iris_list_len = idx;
-}
-
 /// File ///
 
-void set_lines(FILE *fp, char **lines, int *lines_len)
+int load_iris_from_file(const char *file_name, Iris *iris_list)
 {
+  FILE *fp = fopen(file_name, "r");
+  continue_or_handle_file_error(fp, file_name);
 
   char line[LINE_MAX];
-  int idx = 0;
+  int lines_len = 0;
 
   while (fgets(line, LINE_MAX, fp) != NULL)
   {
-    lines[idx] = malloc(sizeof(char) * LINE_MAX);
-    continue_or_handle_malloc_error(lines[idx]);
-
-    strcpy(lines[idx], line);
-    idx++;
+    iris_list[lines_len] = parse_str(line);
+    lines_len++;
   }
 
-  *lines_len = idx;
+  fclose(fp);
+  return lines_len;
 }
+
+/// Main ///
 
 int main(int argc, const char *argv[])
 {
   const char *file_name = "assets/iris.data";
-  FILE *fp = fopen(file_name, "r");
-  continue_or_handle_file_error(fp, file_name);
+  Iris iris_list[LINES_MAX];
+  int iris_list_len = load_iris_from_file(file_name, iris_list);
 
-  char *lines[LINES_MAX];
-  int lines_len = 0;
-  set_lines(fp, lines, &lines_len);
-
-  Iris iris_list[lines_len];
-  for (int i = 0; i < lines_len; i++)
-  {
-    iris_list[i] = parse_str(lines[i]);
-  }
-
-  for (int i = 0; i < lines_len; i++)
+  for (int i = 0; i < iris_list_len; i++)
   {
     char *name;
     asprintf(&name, "Iris %d", i + 1);
     dump_iris(iris_list[i], name);
   }
 
-  fclose(fp);
   return 0;
 }

@@ -2,8 +2,8 @@
 
 typedef struct Feature
 {
-  float length;
-  float width;
+  double length;
+  double width;
 } Feature;
 
 typedef struct Iris
@@ -16,8 +16,8 @@ typedef struct Iris
 void dump_iris(Iris iris, const char *name)
 {
   printf("%s:\n", name);
-  printf("  Sepal: (%f, %f)\n", iris.sepal.length, iris.sepal.width);
-  printf("  Petal: (%f, %f)\n", iris.petal.length, iris.petal.width);
+  printf("  Sepal: (%lf, %lf)\n", iris.sepal.length, iris.sepal.width);
+  printf("  Petal: (%lf, %lf)\n", iris.petal.length, iris.petal.width);
   printf("  Class: %s\n", iris.class);
 }
 

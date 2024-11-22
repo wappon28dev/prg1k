@@ -4,8 +4,8 @@ typedef struct Point
 {
   char name[20];
   char address[100];
-  float lat;
-  float lon;
+  double lat;
+  double lon;
 } Point;
 
 int main(int argc, char *argv[])
@@ -31,7 +31,7 @@ int main(int argc, char *argv[])
   for (int i = 0; i < points_len; i++)
   {
     Point point = points[i];
-    printf("%s\t%s\t%f\t%f\n", point.name, point.address, point.lat, point.lon);
+    printf("%s\t%s\t%lf\t%lf\n", point.name, point.address, point.lat, point.lon);
   }
 
   return 0;

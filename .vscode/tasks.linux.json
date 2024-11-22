@@ -2,7 +2,7 @@
   "tasks": [
     {
       "type": "cppbuild",
-      "label": "build_gcc",
+      "label": "build",
       "command": "gcc",
       "args": [
         "-fdiagnostics-color=always",
@@ -11,7 +11,8 @@
         "-o",
         "${workspaceFolder}/out/a",
         "-std=c11",
-        "-lm"
+        "-lm",
+        "-D_GNU_SOURCE"
       ],
       "options": {
         "cwd": "${fileDirname}"
@@ -27,37 +28,6 @@
         "isDefault": true
       },
       "detail": "デバッガーによって生成されたタスク。"
-    },
-    {
-      "type": "cppbuild",
-      "label": "build_mingw",
-      "command": "x86_64-w64-mingw32-gcc",
-      "args": [
-        "${file}",
-        "-o",
-        "${workspaceFolder}/out/a.exe"
-      ],
-      "options": {
-        "cwd": "${fileDirname}"
-      },
-      "presentation": {
-        "reveal": "silent"
-      },
-      "problemMatcher": [
-        "$gcc"
-      ],
-      "group": {
-        "kind": "build",
-        "isDefault": true
-      },
-      "detail": "デバッガーによって生成されたタスク。"
-    },
-    {
-      "label": "build",
-      "dependsOn": [
-        "build_gcc",
-        "build_mingw"
-      ]
     }
   ],
   "version": "2.0.0"
