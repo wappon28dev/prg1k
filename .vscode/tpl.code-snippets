@@ -1,16 +1,16 @@
 {
-	"": {
-		"prefix": "@",
-		"body": [
-				"#include <stdio.h>",
-				"",
-				"int main(int argc, char *argv[])",
-				"{",
-				"  $0",
-				"",
-				"  return 0;",
-				"}",
-		],
-		"description": ""
-},
+  "": {
+    "prefix": "@",
+    "body": [
+      "#include <stdio.h>",
+      "",
+      "int main(int argc, const char *argv[])",
+      "{",
+      "  $0",
+      "",
+      "  return 0;",
+      "}"
+    ],
+    "description": ""
+  }
 }
