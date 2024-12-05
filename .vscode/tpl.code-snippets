@@ -12,5 +12,10 @@
       "}"
     ],
     "description": ""
+  },
+  "shebang": {
+    "prefix": "#!",
+    "body": ["#!/usr/bin/env bash", "", "$0"],
+    "description": ""
   }
 }
