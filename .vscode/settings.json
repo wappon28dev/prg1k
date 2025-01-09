@@ -96,7 +96,8 @@
     "bindings.h": "c",
     "regex": "cpp",
     "stdlib.h": "c",
-    "string.h": "c"
+    "string.h": "c",
+    "errno.h": "c"
   },
   "cmake.sourceDirectory": "${workspaceFolder}/src/final-assignment",
   "cmake.ignoreCMakeListsMissing": true
