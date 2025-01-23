@@ -97,7 +97,8 @@
     "regex": "cpp",
     "stdlib.h": "c",
     "string.h": "c",
-    "errno.h": "c"
+    "errno.h": "c",
+    "float.h": "c"
   },
   "cmake.sourceDirectory": "${workspaceFolder}/src/final-assignment",
   "cmake.ignoreCMakeListsMissing": true
